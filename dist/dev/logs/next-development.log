@@ -1,0 +1,313 @@
+[00:00:01.393] Server  LOG     ✓ Ready in 935ms
+[00:00:04.480] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:04:26.550] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:25:20.208] Server  LOG     ✓ Compiled in 691ms
+[00:26:52.767] Server  LOG     ✓ Compiled in 195ms
+[00:26:53.481] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:28:08.480] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:28:09.931] Server  LOG     ✓ Compiled in 241ms
+[00:28:10.474] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:28:25.077] Server  LOG     ✓ Compiled in 255ms
+[00:28:25.483] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:28:54.478] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:28:57.058] Server  LOG     ✓ Compiled in 813ms
+[00:28:57.478] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:29:41.567] Server  LOG     ✓ Compiled in 751ms
+[00:29:42.474] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:29:58.479] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:29:59.476] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:29:59.476] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:02.486] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:03.469] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:03.470] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:18.476] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:18.476] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:19.477] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:19.477] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:22.479] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx
+[00:30:23.474] Browser ERROR   ./oryxen/src/components/Services.tsx:68:9
+Parsing ecmascript source code failed
+  66 |           }
+  67 |         }
+> 68 |       } else {
+     |         ^^^^
+  69 |       // Stop auto-scrolling if user scrolls away
+  70 |       setShouldAutoScroll(false);
+  71 |     }
+
+Expected ',', got 'else'
+
+Import trace:
+  Server Component:
+    ./oryxen/src/components/Services.tsx
+    ./oryxen/src/app/page.tsx

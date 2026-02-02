@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --accent-cyan: #22d3ee;
+  --accent-blue: #3b82f6;
+  --muted-gray: #a1a1aa;
+  --border-subtle: #27272a;
+  /* zinc-800 */
+  --glass-bg: rgba(0, 0, 0, 0.9);
+  /* Less translucent, more solid */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-blue: var(--accent-blue);
+  --color-muted-gray: var(--muted-gray);
+  --color-border-subtle: var(--border-subtle);
+  --color-glass-bg: var(--glass-bg);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Overrides for spacing and radius if possible in inline theme, 
+     otherwise manual classes used. Tailwind v4 theme config: */
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--background);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Typography Defaults for "Quietly Confident" feel */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.025em;
+  /* Tight tracking globally for headings */
+  font-weight: 600;
+}
+
+h1 {
+  letter-spacing: -0.035em;
+}
+
+/* Custom scrollbar - Minimal */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  /* zinc-700 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+  /* zinc-600 */
+}
+
+/* Selection */
+::selection {
+  background: #27272a;
+  /* zinc-800 */
+  color: #fff;
+}
+
+/* Utilities */
+.glass {
+  background: rgba(9, 9, 11, 0.8);
+  /* zinc-950 alpha */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Subtler fade */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* More engineered ease */
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  /* Slow, constant speed */
+}
+
+@keyframes marquee-slow {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-slow {
+  animation: marquee-slow 120s linear infinite;
+}
+
+/* Enterprise container - Stricter padding */
+.container-width {
+  @apply max-w-[1200px] mx-auto px-4 md:px-6 lg:px-12;
+  /* Slightly narrower max-width for readability */
+}
+
+/* Focus styles - High contrast accessibility */
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

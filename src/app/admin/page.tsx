@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Eye, EyeOff, Mail, Calendar, FileText, MessageSquare, Check, Loader2, Lock, Plus, Trash2, Edit3, Save, X, Layout, BarChart3, Briefcase } from "lucide-react";
 import Link from "next/link";
 
-type Tab = "submissions" | "testimonials" | "showcase" | "content" | "stats";
+type Tab = "submissions" | "testimonials" | "showcase" | "content" | "stats" | "slots";
 
 interface Submission {
     id: string;
@@ -63,6 +63,7 @@ export default function AdminPage() {
     const [showcase, setShowcase] = useState<ShowcaseProject[]>([]);
     const [stats, setStats] = useState<Stat[]>([]);
     const [content, setContent] = useState<ContentItem[]>([]);
+    const [slots, setSlots] = useState<any[]>([]); // Consultation slots
 
     // Modal states
     const [editingItem, setEditingItem] = useState<unknown>(null);
@@ -120,12 +121,13 @@ export default function AdminPage() {
 
     async function loadData() {
         try {
-            const [subRes, testRes, showRes, statRes, contentRes] = await Promise.all([
+            const [subRes, testRes, showRes, statRes, contentRes, slotsRes] = await Promise.all([
                 fetch('/api/admin?resource=submissions'),
                 fetch('/api/admin?resource=testimonials'),
                 fetch('/api/admin?resource=showcase'),
                 fetch('/api/admin?resource=stats'),
-                fetch('/api/admin?resource=content')
+                fetch('/api/admin?resource=content'),
+                fetch('/api/admin?resource=slots')
             ]);
 
             if (subRes.ok) setSubmissions(await subRes.json());
@@ -133,6 +135,7 @@ export default function AdminPage() {
             if (showRes.ok) setShowcase(await showRes.json());
             if (statRes.ok) setStats(await statRes.json());
             if (contentRes.ok) setContent(await contentRes.json());
+            if (slotsRes.ok) setSlots(await slotsRes.json());
         } catch (error) {
             console.error('Failed to load data:', error);
         }
@@ -250,7 +253,8 @@ export default function AdminPage() {
                         { id: "testimonials", label: "Testimonials", icon: MessageSquare },
                         { id: "showcase", label: "Showcase", icon: Layout },
                         { id: "stats", label: "Stats", icon: BarChart3 },
-                        { id: "content", label: "Content", icon: FileText }
+                        { id: "content", label: "Content", icon: FileText },
+                        { id: "slots", label: "Consultation Slots", icon: Calendar, count: slots.filter((s: any) => !s.is_available).length }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -536,6 +540,57 @@ export default function AdminPage() {
                     onCreate={createItem}
                     onUpdate={updateItem}
                 />
+            )}
+
+            {/* Consultation Slots Tab */}
+            {activeTab === "slots" && (
+                <div className="space-y-4">
+                    <h2 className="text-xl font-bold mb-6">Consultation Slots</h2>
+                    {slots.length === 0 ? (
+                        <p className="text-zinc-500 text-center py-12">No consultation slots yet</p>
+                    ) : (
+                        <div className="space-y-2">
+                            {slots.map((slot: any) => (
+                                <div
+                                    key={slot.id}
+                                    className={`p-4 rounded-lg border ${!slot.is_available
+                                            ? "bg-red-500/10 border-red-500/30"
+                                            : "bg-green-500/10 border-green-500/30"
+                                        }`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="flex items-center gap-3">
+                                                <span className="font-mono text-white">
+                                                    {new Date(slot.date).toLocaleDateString()}
+                                                </span>
+                                                <span className="font-mono text-cyan-400">{slot.time}</span>
+                                                <span className={`text-xs px-2 py-1 rounded-full ${!slot.is_available
+                                                        ? "bg-red-500/20 text-red-400"
+                                                        : "bg-green-500/20 text-green-400"
+                                                    }`}>
+                                                    {slot.is_available ? "Available" : "Booked"}
+                                                </span>
+                                            </div>
+                                            {!slot.is_available && slot.booked_by_name && (
+                                                <p className="text-sm text-zinc-400 mt-2">
+                                                    <strong>{slot.booked_by_name}</strong> • {slot.booked_by_email}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <button
+                                            onClick={() => deleteItem('slot', slot.id)}
+                                            className="p-2 text-zinc-500 hover:text-red-500 transition-colors"
+                                            title="Delete slot"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             )}
         </main>
     );

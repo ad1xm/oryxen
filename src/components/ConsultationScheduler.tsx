@@ -189,7 +189,9 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
             }
         } catch (error) {
             console.error('Booking error:', error);
-            alert("Failed to book consultation. Please try again.");
+            // Show more detailed error to help debug
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            alert(`Failed to book consultation: ${errorMessage}\n\nPlease try again or contact support.`);
         } finally {
             setIsSubmitting(false);
         }
@@ -321,10 +323,10 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                             onClick={() => handleTimeSelect(time)}
                                             disabled={!status.isAvailable}
                                             className={`py-3 rounded-lg text-sm font-medium transition-all ${isSelected
-                                                    ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
-                                                    : status.color === 'green'
-                                                        ? "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
-                                                        : "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed opacity-70"
+                                                ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
+                                                : status.color === 'green'
+                                                    ? "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
+                                                    : "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed opacity-70"
                                                 }`}
                                         >
                                             {time}

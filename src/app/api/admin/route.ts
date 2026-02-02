@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+// Admin API with Supabase integration
 
 // Use service role key for admin operations
 function getSupabaseAdmin() {

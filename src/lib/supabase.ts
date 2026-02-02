@@ -113,6 +113,7 @@ export async function getAllSlotsForDate(date: string) {
     return data as ConsultationSlot[];
 }
 
+
 export async function bookSlot(id: string, name: string, email: string) {
     const { error } = await supabase
         .from('consultation_slots')
@@ -130,6 +131,20 @@ export async function createSlot(date: string, time: string) {
     const { error } = await supabase
         .from('consultation_slots')
         .insert({ date, time, is_available: true });
+
+    if (error) throw error;
+}
+
+export async function createAndBookSlot(date: string, time: string, name: string, email: string) {
+    const { error } = await supabase
+        .from('consultation_slots')
+        .insert({
+            date,
+            time,
+            is_available: false,
+            booked_by_name: name,
+            booked_by_email: email
+        });
 
     if (error) throw error;
 }

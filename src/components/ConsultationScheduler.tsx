@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Calendar, Clock, Globe, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAllSlotsForDate, bookSlot, ConsultationSlot } from "@/lib/supabase";
+import { getAllSlotsForDate, bookSlot, createAndBookSlot, ConsultationSlot } from "@/lib/supabase";
 
 // Generate time slots (7:30 PM - 1 AM IST)
 const timeSlots = [
@@ -83,13 +83,17 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
     };
 
     const isSlotAvailable = (time: string) => {
-        // A slot is only available if it exists in database AND is_available is true
+        // A slot is available UNLESS it exists in database and is marked as unavailable
         const slot = bookedSlots.find(s => s.time === time);
-        return slot?.is_available === true;
+        // If slot doesn't exist in DB, it's available (not booked yet)
+        // If slot exists and is_available is true, it's available
+        // If slot exists and is_available is false, it's NOT available
+        if (!slot) return true; // Not in DB = available
+        return slot.is_available === true;
     };
 
     const isSlotBooked = (time: string) => {
-        // A slot is booked if it exists and is_available is false
+        // A slot is booked only if it exists and is_available is false
         const slot = bookedSlots.find(s => s.time === time);
         return slot !== undefined && !slot.is_available;
     };
@@ -123,13 +127,11 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
             const slot = bookedSlots.find(s => s.time === selectedTime);
 
             if (slot && slot.is_available) {
-                // Book the slot in database first
+                // Book existing available slot
                 await bookSlot(slot.id, formData.name, formData.email);
             } else if (!slot) {
-                // Slot doesn't exist in database yet - this shouldn't happen in production
-                alert("This time slot is not available in our system. Please contact us directly.");
-                setIsSubmitting(false);
-                return;
+                // Slot doesn't exist in database yet - create it and book it
+                await createAndBookSlot(dateString, selectedTime, formData.name, formData.email);
             } else {
                 // Slot was already booked (race condition)
                 alert("This slot was just booked by someone else. Please select another time.");
@@ -316,7 +318,7 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                                 }`}
                                         >
                                             {time}
-                                            {!available && <span className="block text-xs mt-0.5">{booked ? "Booked" : "N/A"}</span>}
+                                            {booked && <span className="block text-xs mt-0.5">Booked</span>}
                                         </button>
                                     );
                                 })}

@@ -128,15 +128,15 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 1.2 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center sm:items-stretch"
               >
                 <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Link
                     href="#contact"
-                    className="bg-white text-black px-8 py-4 text-base font-bold rounded-md hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 group"
+                    className="bg-white text-black px-8 py-3.5 text-sm md:text-base font-bold rounded-full hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2 group min-w-[180px]"
                   >
                     Start a Project
                     <motion.span
@@ -150,7 +150,7 @@ export default function Hero() {
                 </motion.div>
                 <Link
                   href="#services"
-                  className="text-zinc-400 hover:text-white px-8 py-4 text-base font-medium transition-colors border-2 border-transparent hover:border-zinc-800 rounded-md flex items-center justify-center"
+                  className="text-zinc-400 hover:text-white px-8 py-3.5 text-sm md:text-base font-medium transition-all border border-zinc-800 hover:border-zinc-700 rounded-full flex items-center justify-center min-w-[160px] hover:bg-zinc-900/50"
                 >
                   View Work
                 </Link>

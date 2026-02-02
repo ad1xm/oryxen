@@ -149,7 +149,7 @@ export default function Hero() {
                   </Link>
                 </motion.div>
                 <Link
-                  href="#services"
+                  href="#products"
                   className="text-zinc-400 hover:text-white px-8 py-3.5 text-sm md:text-base font-medium transition-all border border-zinc-800 hover:border-zinc-700 rounded-full flex items-center justify-center min-w-[160px] hover:bg-zinc-900/50"
                 >
                   View Work

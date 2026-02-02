@@ -13,7 +13,7 @@ export default function Capabilities() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="py-32 bg-black border-b border-zinc-900">
+        <section id="capabilities" ref={sectionRef} className="py-32 bg-black border-b border-zinc-900">
             <div className="container-width">
 
                 {/* Header */}

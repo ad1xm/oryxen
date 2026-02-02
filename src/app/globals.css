@@ -138,7 +138,7 @@ h1 {
 }
 
 .animate-marquee-slow {
-  animation: marquee-slow 120s linear infinite;
+  animation: marquee-slow 60s linear infinite;
 }
 
 /* Enterprise container - Stricter padding */

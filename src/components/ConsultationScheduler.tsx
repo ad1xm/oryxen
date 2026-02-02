@@ -82,12 +82,20 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
         }
     };
 
+    const isSlotAvailable = (time: string) => {
+        // A slot is only available if it exists in database AND is_available is true
+        const slot = bookedSlots.find(s => s.time === time);
+        return slot?.is_available === true;
+    };
+
     const isSlotBooked = (time: string) => {
-        return bookedSlots.some(slot => slot.time === time && !slot.is_available);
+        // A slot is booked if it exists and is_available is false
+        const slot = bookedSlots.find(s => s.time === time);
+        return slot !== undefined && !slot.is_available;
     };
 
     const handleTimeSelect = (time: string) => {
-        if (!isSlotBooked(time)) {
+        if (isSlotAvailable(time)) {
             setSelectedTime(time);
             setStep("confirm");
         }
@@ -291,23 +299,24 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                         ) : (
                             <div className="grid grid-cols-4 gap-2">
                                 {timeSlots.map(time => {
-                                    const isBooked = isSlotBooked(time);
+                                    const available = isSlotAvailable(time);
+                                    const booked = isSlotBooked(time);
                                     const isSelected = selectedTime === time;
 
                                     return (
                                         <button
                                             key={time}
                                             onClick={() => handleTimeSelect(time)}
-                                            disabled={isBooked}
+                                            disabled={!available}
                                             className={`py-3 rounded-lg text-sm font-medium transition-all ${isSelected
-                                                    ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
-                                                    : isBooked
-                                                        ? "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed"
-                                                        : "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
+                                                ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
+                                                : available
+                                                    ? "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
+                                                    : "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed"
                                                 }`}
                                         >
                                             {time}
-                                            {isBooked && <span className="block text-xs mt-0.5">Booked</span>}
+                                            {!available && <span className="block text-xs mt-0.5">{booked ? "Booked" : "N/A"}</span>}
                                         </button>
                                     );
                                 })}

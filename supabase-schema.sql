@@ -56,8 +56,8 @@ ALTER TABLE form_submissions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read visible testimonials" ON testimonials
   FOR SELECT USING (is_visible = true);
 
-CREATE POLICY "Public read available slots" ON consultation_slots
-  FOR SELECT USING (is_available = true);
+CREATE POLICY "Public read all slots" ON consultation_slots
+  FOR SELECT USING (true);
 
 CREATE POLICY "Public read content" ON site_content
   FOR SELECT USING (true);

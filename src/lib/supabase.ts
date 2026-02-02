@@ -102,6 +102,17 @@ export async function getAvailableSlots(date?: string) {
     return data as ConsultationSlot[];
 }
 
+export async function getAllSlotsForDate(date: string) {
+    const { data, error } = await supabase
+        .from('consultation_slots')
+        .select('*')
+        .eq('date', date)
+        .order('time', { ascending: true });
+
+    if (error) throw error;
+    return data as ConsultationSlot[];
+}
+
 export async function bookSlot(id: string, name: string, email: string) {
     const { error } = await supabase
         .from('consultation_slots')

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, Globe, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAllSlotsForDate, bookSlot, ConsultationSlot } from "@/lib/supabase";
 
 // Generate time slots (7:30 PM - 1 AM IST)
 const timeSlots = [
@@ -28,6 +29,8 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
     const [step, setStep] = useState<"date" | "time" | "confirm" | "success">("date");
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", notes: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+    const [bookedSlots, setBookedSlots] = useState<ConsultationSlot[]>([]);
     const [timezone, setTimezone] = useState(() => {
         try {
             return Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -56,16 +59,38 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
         return date >= today && date.getDay() !== 0 && date.getDay() !== 6;
     };
 
-    const handleDateSelect = (day: number) => {
+    const handleDateSelect = async (day: number) => {
         if (isDateSelectable(day)) {
-            setSelectedDate(new Date(year, month, day));
+            const date = new Date(year, month, day);
+            setSelectedDate(date);
+            setSelectedTime(null);
+
+            // Fetch slots for this date
+            setIsLoadingSlots(true);
+            try {
+                const dateString = date.toISOString().split('T')[0];
+                const slots = await getAllSlotsForDate(dateString);
+                setBookedSlots(slots);
+            } catch (error) {
+                console.error('Error fetching slots:', error);
+                setBookedSlots([]);
+            } finally {
+                setIsLoadingSlots(false);
+            }
+
             setStep("time");
         }
     };
 
+    const isSlotBooked = (time: string) => {
+        return bookedSlots.some(slot => slot.time === time && !slot.is_available);
+    };
+
     const handleTimeSelect = (time: string) => {
-        setSelectedTime(time);
-        setStep("confirm");
+        if (!isSlotBooked(time)) {
+            setSelectedTime(time);
+            setStep("confirm");
+        }
     };
 
     const formatSelectedDate = () => {
@@ -85,6 +110,30 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
         setIsSubmitting(true);
 
         try {
+            // Find the slot for this date/time
+            const dateString = selectedDate.toISOString().split('T')[0];
+            const slot = bookedSlots.find(s => s.time === selectedTime);
+
+            if (slot && slot.is_available) {
+                // Book the slot in database first
+                await bookSlot(slot.id, formData.name, formData.email);
+            } else if (!slot) {
+                // Slot doesn't exist in database yet - this shouldn't happen in production
+                alert("This time slot is not available in our system. Please contact us directly.");
+                setIsSubmitting(false);
+                return;
+            } else {
+                // Slot was already booked (race condition)
+                alert("This slot was just booked by someone else. Please select another time.");
+                setIsSubmitting(false);
+                // Refresh slots
+                const slots = await getAllSlotsForDate(dateString);
+                setBookedSlots(slots);
+                setStep("time");
+                return;
+            }
+
+            // Send notification to admin via Formspree
             const response = await fetch("https://formspree.io/f/mandwdda", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -114,10 +163,12 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
 
                 setStep("success");
             } else {
-                alert("Failed to book consultation. Please try again.");
+                alert("Failed to send notification. Your booking is saved but we may need to confirm manually.");
+                setStep("success");
             }
-        } catch {
-            alert("Network error. Please try again.");
+        } catch (error) {
+            console.error('Booking error:', error);
+            alert("Failed to book consultation. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -229,26 +280,39 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                             )}
                             {!selectedTime && (
                                 <div className="absolute inset-0 flex items-center justify-center text-zinc-600 text-sm">
-                                    Pick time
+                                    {isLoadingSlots ? "Loading..." : "Pick time"}
                                 </div>
                             )}
                         </div>
 
                         {/* Time Slots Grid */}
-                        <div className="grid grid-cols-4 gap-2">
-                            {timeSlots.map(time => (
-                                <button
-                                    key={time}
-                                    onClick={() => handleTimeSelect(time)}
-                                    className={`py-3 rounded-lg text-sm font-medium transition-all ${selectedTime === time
-                                        ? "bg-cyan-500 text-black"
-                                        : "bg-zinc-800 text-white hover:bg-zinc-700"
-                                        }`}
-                                >
-                                    {time}
-                                </button>
-                            ))}
-                        </div>
+                        {isLoadingSlots ? (
+                            <div className="text-center text-zinc-500 py-8">Loading available slots...</div>
+                        ) : (
+                            <div className="grid grid-cols-4 gap-2">
+                                {timeSlots.map(time => {
+                                    const isBooked = isSlotBooked(time);
+                                    const isSelected = selectedTime === time;
+
+                                    return (
+                                        <button
+                                            key={time}
+                                            onClick={() => handleTimeSelect(time)}
+                                            disabled={isBooked}
+                                            className={`py-3 rounded-lg text-sm font-medium transition-all ${isSelected
+                                                    ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
+                                                    : isBooked
+                                                        ? "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed"
+                                                        : "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
+                                                }`}
+                                        >
+                                            {time}
+                                            {isBooked && <span className="block text-xs mt-0.5">Booked</span>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </motion.div>
                 )}
 

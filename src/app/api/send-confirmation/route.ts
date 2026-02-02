@@ -17,8 +17,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Email and name are required' }, { status: 400 });
         }
 
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'ORYXEN <onboarding@resend.dev>';
+
         await resend.emails.send({
-            from: 'ORYXEN <onboarding@resend.dev>',
+            from: fromEmail,
             to: email,
             subject: 'Your message has been received - ORYXEN',
             html: `

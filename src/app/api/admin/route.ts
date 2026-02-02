@@ -31,14 +31,22 @@ export async function POST(request: NextRequest) {
 
         // Login action (no auth required)
         if (action === 'login') {
-            if (password === process.env.ADMIN_PASSWORD) {
+            const envPassword = process.env.ADMIN_PASSWORD;
+            console.log('Login attempt:', {
+                receivedPasswordLength: password?.length,
+                envPasswordExists: !!envPassword,
+                envPasswordLength: envPassword?.length,
+                passwordsMatch: password === envPassword
+            });
+
+            if (password === envPassword) {
                 const token = Buffer.from(password).toString('base64');
                 const response = NextResponse.json({ success: true });
                 response.cookies.set('admin_session', token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'strict',
-                    maxAge: 60 * 60 * 24, // 24 hours
+                    maxAge: 60 * 60 * 24, // 24 hours,
                 });
                 return response;
             }

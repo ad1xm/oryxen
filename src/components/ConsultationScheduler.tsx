@@ -312,7 +312,7 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                     value={formData.phone}
                                     onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
                                     className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                                    placeholder="+1 (555) 000-0000"
+                                    placeholder="+91 98765 43210"
                                 />
                             </div>
                             <div>

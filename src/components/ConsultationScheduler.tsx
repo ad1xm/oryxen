@@ -192,9 +192,18 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                     })
                 });
 
+                // Refresh slots to show updated availability
+                const updatedSlots = await getAllSlotsForDate(dateString);
+                setBookedSlots(updatedSlots);
+
                 setStep("success");
             } else {
                 alert("Failed to send notification. Your booking is saved but we may need to confirm manually.");
+
+                // Still refresh slots even if notification failed
+                const updatedSlots = await getAllSlotsForDate(dateString);
+                setBookedSlots(updatedSlots);
+
                 setStep("success");
             }
         } catch (error) {

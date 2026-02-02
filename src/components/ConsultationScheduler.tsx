@@ -82,24 +82,35 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
         }
     };
 
-    const isSlotAvailable = (time: string) => {
-        // A slot is available UNLESS it exists in database and is marked as unavailable
-        const slot = bookedSlots.find(s => s.time === time);
-        // If slot doesn't exist in DB, it's available (not booked yet)
-        // If slot exists and is_available is true, it's available
-        // If slot exists and is_available is false, it's NOT available
-        if (!slot) return true; // Not in DB = available
-        return slot.is_available === true;
-    };
+    /**
+     * Get the status of a time slot - SINGLE SOURCE OF TRUTH
+     * Returns color, clickability, and label based on database state
+     */
+    const getSlotStatus = (time: string) => {
+        const dbSlot = bookedSlots.find(s => s.time === time);
 
-    const isSlotBooked = (time: string) => {
-        // A slot is booked only if it exists and is_available is false
-        const slot = bookedSlots.find(s => s.time === time);
-        return slot !== undefined && !slot.is_available;
+        // If slot exists in database AND is booked (is_available = false)
+        if (dbSlot && !dbSlot.is_available) {
+            return {
+                isAvailable: false,
+                isBooked: true,
+                color: 'red',
+                label: 'Booked'
+            };
+        }
+
+        // Otherwise, slot is available (either doesn't exist or is_available = true)
+        return {
+            isAvailable: true,
+            isBooked: false,
+            color: 'green',
+            label: null
+        };
     };
 
     const handleTimeSelect = (time: string) => {
-        if (isSlotAvailable(time)) {
+        const status = getSlotStatus(time);
+        if (status.isAvailable) {
             setSelectedTime(time);
             setStep("confirm");
         }
@@ -301,24 +312,23 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                         ) : (
                             <div className="grid grid-cols-4 gap-2">
                                 {timeSlots.map(time => {
-                                    const available = isSlotAvailable(time);
-                                    const booked = isSlotBooked(time);
+                                    const status = getSlotStatus(time);
                                     const isSelected = selectedTime === time;
 
                                     return (
                                         <button
                                             key={time}
                                             onClick={() => handleTimeSelect(time)}
-                                            disabled={!available}
+                                            disabled={!status.isAvailable}
                                             className={`py-3 rounded-lg text-sm font-medium transition-all ${isSelected
-                                                ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
-                                                : available
-                                                    ? "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
-                                                    : "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed"
+                                                    ? "bg-cyan-500 text-black ring-2 ring-cyan-400"
+                                                    : status.color === 'green'
+                                                        ? "bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 hover:border-green-400"
+                                                        : "bg-red-500/20 text-red-400 border border-red-500/50 cursor-not-allowed opacity-70"
                                                 }`}
                                         >
                                             {time}
-                                            {booked && <span className="block text-xs mt-0.5">Booked</span>}
+                                            {status.label && <span className="block text-xs mt-0.5">{status.label}</span>}
                                         </button>
                                     );
                                 })}

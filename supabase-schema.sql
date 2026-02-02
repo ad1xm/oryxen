@@ -59,6 +59,12 @@ CREATE POLICY "Public read visible testimonials" ON testimonials
 CREATE POLICY "Public read all slots" ON consultation_slots
   FOR SELECT USING (true);
 
+CREATE POLICY "Public can insert slots" ON consultation_slots
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Public can update slots" ON consultation_slots
+  FOR UPDATE USING (true);
+
 CREATE POLICY "Public read content" ON site_content
   FOR SELECT USING (true);
 

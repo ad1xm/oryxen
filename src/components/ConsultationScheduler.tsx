@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Calendar, Clock, Globe, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Generate time slots (9 AM - 6 PM IST)
+// Generate time slots (7:30 PM - 1 AM IST)
 const timeSlots = [
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "14:00", "14:30", "15:00", "15:30",
-    "16:00", "16:30", "17:00", "17:30"
+    // Early morning slots (next day technically, but part of the night shift)
+    "00:00", "00:30", "01:00",
+    // Evening slots
+    "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00", "23:30"
 ];
 
 const months = ["January", "February", "March", "April", "May", "June",
@@ -99,6 +100,17 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
             });
 
             if (response.ok) {
+                // Send confirmation email via Resend
+                await fetch("/api/send-confirmation", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: formData.email,
+                        name: formData.name,
+                        type: "consultation"
+                    })
+                });
+
                 setStep("success");
             } else {
                 alert("Failed to book consultation. Please try again.");
@@ -170,10 +182,10 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                             onClick={() => handleDateSelect(day)}
                                             disabled={!isDateSelectable(day)}
                                             className={`w-full h-full rounded-lg text-sm transition-all ${selectedDate?.getDate() === day && selectedDate?.getMonth() === month
-                                                    ? "bg-cyan-500 text-black font-bold"
-                                                    : isDateSelectable(day)
-                                                        ? "text-white hover:bg-zinc-800"
-                                                        : "text-zinc-700 cursor-not-allowed"
+                                                ? "bg-cyan-500 text-black font-bold"
+                                                : isDateSelectable(day)
+                                                    ? "text-white hover:bg-zinc-800"
+                                                    : "text-zinc-700 cursor-not-allowed"
                                                 }`}
                                         >
                                             {day}
@@ -228,8 +240,8 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                     key={time}
                                     onClick={() => handleTimeSelect(time)}
                                     className={`py-3 rounded-lg text-sm font-medium transition-all ${selectedTime === time
-                                            ? "bg-cyan-500 text-black"
-                                            : "bg-zinc-800 text-white hover:bg-zinc-700"
+                                        ? "bg-cyan-500 text-black"
+                                        : "bg-zinc-800 text-white hover:bg-zinc-700"
                                         }`}
                                 >
                                     {time}

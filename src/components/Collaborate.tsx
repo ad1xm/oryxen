@@ -33,7 +33,7 @@ export default function Collaborate() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.description) return;
+    if (!formData.name || !formData.email || !formData.phone || !formData.description) return;
 
     setFormState("submitting");
 
@@ -46,7 +46,7 @@ export default function Collaborate() {
           type: "Project Inquiry",
           name: formData.name,
           email: formData.email,
-          phone: formData.phone || "Not provided",
+          phone: formData.phone,
           company: formData.company || "Not provided",
           description: formData.description
         })
@@ -205,16 +205,17 @@ export default function Collaborate() {
                 <div className="space-y-2">
                   <label htmlFor="collab-phone" className="text-sm font-medium text-zinc-300 flex items-center gap-2">
                     <Phone className="w-3 h-3" />
-                    Phone (optional)
+                    Phone *
                   </label>
                   <input
+                    required
                     name="phone"
                     id="collab-phone"
                     type="tel"
                     autoComplete="tel"
                     value={formData.phone}
                     onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 XXXXX XXXXX"
                     className="w-full bg-zinc-900/50 border border-zinc-800 rounded-md px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/50 transition-all"
                   />
                 </div>

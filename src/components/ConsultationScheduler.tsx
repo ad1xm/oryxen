@@ -26,7 +26,7 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [step, setStep] = useState<"date" | "time" | "confirm" | "success">("date");
-    const [formData, setFormData] = useState({ name: "", email: "", notes: "" });
+    const [formData, setFormData] = useState({ name: "", email: "", phone: "", notes: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [timezone, setTimezone] = useState(() => {
         try {
@@ -80,7 +80,7 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedDate || !selectedTime || !formData.name || !formData.email) return;
+        if (!selectedDate || !selectedTime || !formData.name || !formData.email || !formData.phone) return;
 
         setIsSubmitting(true);
 
@@ -92,6 +92,7 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                     type: "Consultation Booking",
                     name: formData.name,
                     email: formData.email,
+                    phone: formData.phone,
                     date: formatSelectedDate(),
                     time: selectedTime,
                     timezone: timezone,
@@ -301,6 +302,17 @@ export default function ConsultationScheduler({ onBack }: ConsultationSchedulerP
                                     onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
                                     className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
                                     placeholder="you@company.com"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm text-zinc-400 block mb-2">Phone Number *</label>
+                                <input
+                                    required
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                                    placeholder="+1 (555) 000-0000"
                                 />
                             </div>
                             <div>

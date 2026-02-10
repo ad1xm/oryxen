@@ -107,7 +107,7 @@ export default function Products() {
             >
               <p className="text-zinc-400 text-lg leading-relaxed">
                 A lightweight Windows desktop utility that creates a professional
-                ring-light style border around your screen for video calls, streaming,
+                ring light style border around your screen for video calls, streaming,
                 and content creation.
               </p>
 
@@ -125,9 +125,7 @@ export default function Products() {
                   href="https://remarkable-crumble-3ab060.netlify.app/downloads/edgelightwind-download.zip"
                   className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-zinc-950 font-bold hover:bg-zinc-200 transition-colors group"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M0 3.449L9.75 2.1v9.451l-9.75.043v-8.144zm10.93 2.062l9.645-1.353v9.805l-9.645.023V5.511zm-10.93 7.502l9.75.041v8.117l-9.75-1.34v-6.818zm10.93.136l9.645.025v6.626l-9.645-1.378V13.149z" />
-                  </svg>
+                  <img src="/Windows_logo_2012-Black.svg" alt="Windows" className="w-5 h-5" />
                   <span>Download for Windows</span>
                 </a>
                 <div className="flex items-center gap-3 text-xs text-zinc-600 px-2">
@@ -155,17 +153,7 @@ export default function Products() {
             {/* Background Glow */}
             <div className="absolute inset-0 bg-indigo-500/5 blur-3xl rounded-full" />
 
-            {/* Orbiting Elements for Visual Interest */}
-            <motion.div
-              className="absolute inset-0 border border-indigo-500/10 rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div
-              className="absolute inset-12 border border-purple-500/10 rounded-full"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            />
+            {/* Orbiting Elements REMOVED as per request */}
 
             {/* The Logo Image */}
             <div className="relative z-10 w-48 h-48 bg-zinc-900/50 backdrop-blur-xl rounded-3xl border border-white/10 flex items-center justify-center shadow-2xl shadow-indigo-500/10">

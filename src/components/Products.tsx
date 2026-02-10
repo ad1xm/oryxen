@@ -64,6 +64,116 @@ export default function Products() {
           </motion.div>
 
         </div>
+
+        {/* Spacer between 'slides' */}
+        <div className="h-48"></div>
+
+        {/* EdgeLightWind Slide */}
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* Text Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.div
+              className="mb-8"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <span className="text-xs font-mono text-indigo-400 uppercase tracking-widest">
+                [ UTILITY ]
+              </span>
+            </motion.div>
+            <motion.h2
+              className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight leading-tight"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              EdgeLightWind
+            </motion.h2>
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <p className="text-zinc-400 text-lg leading-relaxed">
+                A lightweight Windows desktop utility that creates a professional
+                ring-light style border around your screen for video calls, streaming,
+                and content creation.
+              </p>
+
+              <ul className="space-y-2 mb-8">
+                {["Video meetings", "Live streaming", "Content recording"].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-zinc-500">
+                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <a
+                  href="https://remarkable-crumble-3ab060.netlify.app/downloads/edgelightwind-download.zip"
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-zinc-950 font-bold hover:bg-zinc-200 transition-colors group"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0 3.449L9.75 2.1v9.451l-9.75.043v-8.144zm10.93 2.062l9.645-1.353v9.805l-9.645.023V5.511zm-10.93 7.502l9.75.041v8.117l-9.75-1.34v-6.818zm10.93.136l9.645.025v6.626l-9.645-1.378V13.149z" />
+                  </svg>
+                  <span>Download for Windows</span>
+                </a>
+                <div className="flex items-center gap-3 text-xs text-zinc-600 px-2">
+                  <div className="text-right border-r border-zinc-800 pr-3">
+                    <div className="font-medium text-zinc-500">VERSION</div>
+                    <div>1.0</div>
+                  </div>
+                  <div>
+                    <div className="font-medium text-zinc-500">PLATFORM</div>
+                    <div>Windows (Electron)</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Visual Content */}
+          <motion.div
+            className="relative w-full aspect-square max-w-[400px] mx-auto flex items-center justify-center p-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Background Glow */}
+            <div className="absolute inset-0 bg-indigo-500/5 blur-3xl rounded-full" />
+
+            {/* Orbiting Elements for Visual Interest */}
+            <motion.div
+              className="absolute inset-0 border border-indigo-500/10 rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="absolute inset-12 border border-purple-500/10 rounded-full"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            />
+
+            {/* The Logo Image */}
+            <div className="relative z-10 w-48 h-48 bg-zinc-900/50 backdrop-blur-xl rounded-3xl border border-white/10 flex items-center justify-center shadow-2xl shadow-indigo-500/10">
+              <img src="/edgelightwind.svg" alt="EdgeLightWind" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );

@@ -125,7 +125,7 @@ export default function Products() {
                   href="https://remarkable-crumble-3ab060.netlify.app/downloads/edgelightwind-download.zip"
                   className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-zinc-950 font-bold hover:bg-zinc-200 transition-colors group"
                 >
-                  <img src="/Windows_logo_2012-Black.svg" alt="Windows" className="w-5 h-5" />
+                  <img src="/windows.svg" alt="Windows" className="w-5 h-5" />
                   <span>Download for Windows</span>
                 </a>
                 <div className="flex items-center gap-3 text-xs text-zinc-600 px-2">

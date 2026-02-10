@@ -16,7 +16,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-zinc-500 leading-relaxed font-mono">
-              © 2025 ORYXEN SYSTEMS <br />
+              © 2026 ORYXEN SYSTEMS <br />
               A studio shaped by A. Choudhury
             </p>
           </div>
@@ -45,7 +45,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-700 font-mono">
-          <p>© 2025 ORYXEN SYSTEMS.</p>
+          <p>© 2026 ORYXEN SYSTEMS.</p>
           <div className="flex gap-6">
             <Link href="/ethics" className="hover:text-zinc-500 transition-colors uppercase">ETHICS</Link>
             <Link href="/privacy" className="hover:text-zinc-500 transition-colors uppercase">PRIVACY</Link>

@@ -22,6 +22,8 @@ export interface ConsultationSlot {
     is_available: boolean;
     booked_by_name?: string;
     booked_by_email?: string;
+    phone?: string;
+    booked_at?: string;
     created_at: string;
 }
 
@@ -87,21 +89,39 @@ export async function updateContent(id: string, value: string) {
 }
 
 // Consultation Slots Functions
-export async function getAvailableSlots(date?: string) {
-    let query = supabase
-        .from('consultation_slots')
-        .select('*')
-        .eq('is_available', true);
 
-    if (date) {
-        query = query.eq('date', date);
+// Fetch slots via server API for reliable reads
+export async function fetchSlotsForDate(date: string): Promise<ConsultationSlot[]> {
+    const res = await fetch(`/api/slots?date=${encodeURIComponent(date)}`);
+    if (!res.ok) {
+        throw new Error('Failed to fetch slots');
     }
-
-    const { data, error } = await query;
-    if (error) throw error;
-    return data as ConsultationSlot[];
+    const json = await res.json();
+    return json.slots as ConsultationSlot[];
 }
 
+// Book a slot via server API (atomic, race-condition safe)
+export async function bookSlotViaAPI(data: {
+    date: string;
+    time: string;
+    name: string;
+    email: string;
+    phone: string;
+    notes?: string;
+}): Promise<{ success: boolean; error?: string; code?: string }> {
+    const res = await fetch('/api/book-slot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+        return { success: false, error: json.error, code: json.code };
+    }
+    return { success: true };
+}
+
+// Keep legacy function for admin panel compatibility
 export async function getAllSlotsForDate(date: string) {
     const { data, error } = await supabase
         .from('consultation_slots')
@@ -111,42 +131,6 @@ export async function getAllSlotsForDate(date: string) {
 
     if (error) throw error;
     return data as ConsultationSlot[];
-}
-
-
-export async function bookSlot(id: string, name: string, email: string) {
-    const { error } = await supabase
-        .from('consultation_slots')
-        .update({
-            is_available: false,
-            booked_by_name: name,
-            booked_by_email: email
-        })
-        .eq('id', id);
-
-    if (error) throw error;
-}
-
-export async function createSlot(date: string, time: string) {
-    const { error } = await supabase
-        .from('consultation_slots')
-        .insert({ date, time, is_available: true });
-
-    if (error) throw error;
-}
-
-export async function createAndBookSlot(date: string, time: string, name: string, email: string) {
-    const { error } = await supabase
-        .from('consultation_slots')
-        .insert({
-            date,
-            time,
-            is_available: false,
-            booked_by_name: name,
-            booked_by_email: email
-        });
-
-    if (error) throw error;
 }
 
 // Testimonials Functions

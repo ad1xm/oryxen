@@ -31,7 +31,10 @@ CREATE TABLE IF NOT EXISTS consultation_slots (
   is_available BOOLEAN DEFAULT true,
   booked_by_name TEXT,
   booked_by_email TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  phone TEXT,
+  booked_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, time)
 );
 
 -- Form Submissions Table

@@ -112,8 +112,8 @@ export default function Collaborate() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-zinc-500 mb-1">Email</h3>
-                <a href="mailto:oryxenconnect@gmail.com" className="text-lg font-medium text-white hover:text-zinc-300 transition-colors">
-                  oryxenconnect@gmail.com
+                <a href="mailto:support@oryxen.co.in" className="text-lg font-medium text-white hover:text-zinc-300 transition-colors">
+                  support@oryxen.co.in
                 </a>
               </div>
             </div>

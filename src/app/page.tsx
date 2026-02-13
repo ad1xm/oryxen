@@ -7,6 +7,7 @@ import TechStack from "@/components/TechStack";
 import Focus from "@/components/Focus";
 import Products from "@/components/Products";
 import Testimonials from "@/components/Testimonials";
+import MiniGame from "@/components/MiniGame";
 import Legal from "@/components/Legal";
 import Contact from "@/components/Contact";
 import Collaborate from "@/components/Collaborate";
@@ -24,6 +25,7 @@ export default function Home() {
       <Focus />
       <Products />
       <Testimonials />
+      <MiniGame />
       <Legal />
       <Contact />
       <Collaborate />

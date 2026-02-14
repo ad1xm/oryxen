@@ -46,8 +46,8 @@ export default function Capabilities() {
                     >
                         <div className="p-6 pb-4">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                         <rect x="3" y="3" width="18" height="18" rx="2" />
                                         <path d="M3 9h18" />
                                         <circle cx="7" cy="6" r="1" fill="currentColor" />
@@ -56,7 +56,7 @@ export default function Capabilities() {
                                 </div>
                                 <h3 className="text-xl font-semibold text-white">Web Development</h3>
                             </div>
-                            <p className="text-cyan-400 text-sm mb-2 font-medium">Production-grade web applications</p>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">Production-grade web applications</p>
                             <p className="text-zinc-400 text-sm leading-relaxed mb-4">
                                 Built with React, Next.js, and modern frameworks. Optimized for speed, SEO, and scalability.
                             </p>
@@ -82,15 +82,15 @@ export default function Capabilities() {
                     >
                         <div className="p-6 pb-4">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                         <rect x="5" y="2" width="14" height="20" rx="3" />
                                         <line x1="12" y1="18" x2="12" y2="18" strokeWidth="2" strokeLinecap="round" />
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-semibold text-white">Mobile Apps</h3>
                             </div>
-                            <p className="text-purple-400 text-sm mb-2 font-medium">Cross-platform native experiences</p>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">Cross-platform native experiences</p>
                             <p className="text-zinc-400 text-sm leading-relaxed">
                                 React Native & Expo. One codebase, iOS & Android.
                             </p>
@@ -111,8 +111,8 @@ export default function Capabilities() {
                     >
                         <div className="p-6 pb-4">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                         <ellipse cx="12" cy="6" rx="8" ry="3" />
                                         <path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6" />
                                         <path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" />
@@ -120,7 +120,7 @@ export default function Capabilities() {
                                 </div>
                                 <h3 className="text-xl font-semibold text-white">Backend Systems</h3>
                             </div>
-                            <p className="text-green-400 text-sm mb-2 font-medium">APIs & Database Architecture</p>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">APIs & Database Architecture</p>
                             <p className="text-zinc-400 text-sm leading-relaxed">
                                 Node.js, PostgreSQL, Supabase, Firebase. Real-time sync.
                             </p>
@@ -141,14 +141,14 @@ export default function Capabilities() {
                     >
                         <div className="p-6 pb-4">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-semibold text-white">Realtime</h3>
                             </div>
-                            <p className="text-yellow-400 text-sm mb-2 font-medium">Live data synchronization</p>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">Live data synchronization</p>
                             <p className="text-zinc-400 text-sm leading-relaxed">
                                 WebSockets, subscriptions, instant updates.
                             </p>
@@ -169,20 +169,20 @@ export default function Capabilities() {
                     >
                         <div className="p-6 pb-4">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                         <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
                                     </svg>
                                 </div>
                                 <h3 className="text-xl font-semibold text-white">Cloud Infrastructure</h3>
                             </div>
-                            <p className="text-blue-400 text-sm mb-2 font-medium">Deploy anywhere, scale infinitely</p>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">Deploy anywhere, scale infinitely</p>
                             <p className="text-zinc-400 text-sm leading-relaxed mb-4">
                                 Vercel, AWS, Docker. Zero-downtime deployments, edge computing, auto-scaling.
                             </p>
                             <div className="flex gap-4 items-center">
                                 <span className="text-xs text-zinc-400 flex items-center gap-2">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                    <span className="w-2 h-2 bg-white/40 rounded-full animate-pulse" />
                                     99.99% Uptime
                                 </span>
                                 <span className="text-xs text-zinc-500">|</span>
@@ -216,11 +216,11 @@ function WebDevAnimation() {
                         animate={{
                             opacity: 1,
                             x: 0,
-                            backgroundColor: i === 1 ? "rgba(34,211,238,0.1)" : "transparent"
+                            backgroundColor: i === 1 ? "rgba(255,255,255,0.05)" : "transparent"
                         }}
                         transition={{ delay: i * 0.1 }}
                     >
-                        <span className="text-cyan-400">{i < 2 ? '▼' : '▶'}</span>
+                        <span className="text-zinc-400">{i < 2 ? '▼' : '▶'}</span>
                         <span className="text-zinc-400">{item}</span>
                     </motion.div>
                 ))}
@@ -230,17 +230,17 @@ function WebDevAnimation() {
             <div className="flex-1 bg-zinc-900/60 rounded-lg border border-zinc-700/30 overflow-hidden">
                 {/* Tabs */}
                 <div className="h-5 bg-zinc-800/50 flex items-center px-2 border-b border-zinc-700/30">
-                    <div className="px-2 py-0.5 bg-zinc-900 rounded-t text-[8px] font-mono text-cyan-400 border-t border-x border-cyan-500/30">
+                    <div className="px-2 py-0.5 bg-zinc-900 rounded-t text-[8px] font-mono text-zinc-300 border-t border-x border-zinc-600/30">
                         index.tsx
                     </div>
                 </div>
                 {/* Code */}
                 <div className="p-2 font-mono text-[8px] leading-relaxed">
                     {[
-                        { text: "export default function", color: "text-purple-400" },
+                        { text: "export default function", color: "text-zinc-400" },
                         { text: "  App() {", color: "text-zinc-300" },
                         { text: "    return (", color: "text-zinc-500" },
-                        { text: "      <Layout>", color: "text-cyan-400" },
+                        { text: "      <Layout>", color: "text-zinc-300" },
                     ].map((line, i) => (
                         <motion.div
                             key={i}
@@ -252,7 +252,7 @@ function WebDevAnimation() {
                             {line.text}
                             {i === 3 && (
                                 <motion.span
-                                    className="inline-block w-1 h-2.5 bg-cyan-400 ml-0.5"
+                                    className="inline-block w-1 h-2.5 bg-white/60 ml-0.5"
                                     animate={{ opacity: [1, 0, 1] }}
                                     transition={{ duration: 1, repeat: Infinity }}
                                 />
@@ -267,13 +267,13 @@ function WebDevAnimation() {
                 <div className="text-[7px] font-mono text-zinc-500 mb-1">PREVIEW</div>
                 <div className="h-full bg-zinc-950 rounded border border-zinc-800/50 p-1.5">
                     <motion.div
-                        className="h-2 bg-gradient-to-r from-cyan-500/40 to-blue-500/40 rounded mb-1"
+                        className="h-2 bg-gradient-to-r from-white/20 to-white/10 rounded mb-1"
                         animate={{ width: ["40%", "80%", "40%"] }}
                         transition={{ duration: 2, repeat: Infinity }}
                     />
                     <div className="flex gap-1">
                         <motion.div
-                            className="w-4 h-4 bg-cyan-500/20 rounded"
+                            className="w-4 h-4 bg-white/10 rounded"
                             animate={{ scale: [1, 1.1, 1] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
                         />
@@ -305,7 +305,7 @@ function MobileAnimation() {
                 <div className="pt-4 px-1.5 pb-2 h-full flex flex-col">
                     {/* Header */}
                     <motion.div
-                        className="h-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full mb-2"
+                        className="h-3 bg-gradient-to-r from-white/20 to-white/10 rounded-full mb-2"
                         animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity }}
                     />
@@ -320,7 +320,7 @@ function MobileAnimation() {
                             transition={{ delay: 0.5 + i * 0.2 }}
                         >
                             <motion.div
-                                className="h-1.5 bg-purple-500/40 rounded mb-1"
+                                className="h-1.5 bg-white/20 rounded mb-1"
                                 animate={{ width: ["50%", "80%", "50%"] }}
                                 transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                             />
@@ -333,7 +333,7 @@ function MobileAnimation() {
                         {[0, 1, 2].map(i => (
                             <motion.div
                                 key={i}
-                                className={`w-2.5 h-2.5 rounded-full ${i === 1 ? 'bg-purple-500' : 'bg-zinc-600/50'}`}
+                                className={`w-2.5 h-2.5 rounded-full ${i === 1 ? 'bg-white/50' : 'bg-zinc-600/50'}`}
                                 animate={i === 1 ? { scale: [1, 1.2, 1] } : {}}
                                 transition={{ duration: 1, repeat: Infinity }}
                             />
@@ -344,12 +344,12 @@ function MobileAnimation() {
 
             {/* Floating notification */}
             <motion.div
-                className="absolute -top-2 -right-8 bg-zinc-800 border border-purple-500/30 rounded-lg px-2 py-1 shadow-lg"
+                className="absolute -top-2 -right-8 bg-zinc-800 border border-zinc-600/30 rounded-lg px-2 py-1 shadow-lg"
                 initial={{ opacity: 0, scale: 0.8, x: 10 }}
                 animate={{ opacity: [0, 1, 1, 0], scale: [0.8, 1, 1, 0.8], x: [10, 0, 0, 10] }}
                 transition={{ duration: 4, repeat: Infinity, repeatDelay: 2 }}
             >
-                <div className="text-[7px] text-purple-400 font-mono">New update!</div>
+                <div className="text-[7px] text-zinc-400 font-mono">New update!</div>
             </motion.div>
         </div>
     );
@@ -362,8 +362,8 @@ function BackendAnimation() {
             <svg className="w-full h-full" viewBox="0 0 200 100">
                 <defs>
                     <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgba(74,222,128,0.8)" />
-                        <stop offset="100%" stopColor="rgba(34,211,238,0.8)" />
+                        <stop offset="0%" stopColor="rgba(255,255,255,0.6)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.3)" />
                     </linearGradient>
                     <filter id="glow2">
                         <feGaussianBlur stdDeviation="2" result="blur" />
@@ -377,13 +377,13 @@ function BackendAnimation() {
                         <g key={i} transform={`translate(0, ${i * 15})`}>
                             <motion.ellipse
                                 cx="15" cy="5" rx="15" ry="5"
-                                fill="none" stroke="rgba(74,222,128,0.4)" strokeWidth="1"
-                                animate={{ stroke: ["rgba(74,222,128,0.3)", "rgba(74,222,128,0.7)", "rgba(74,222,128,0.3)"] }}
+                                fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"
+                                animate={{ stroke: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.15)"] }}
                                 transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                             />
                             <motion.rect
                                 x="0" y="5" width="30" height="10"
-                                fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.4)" strokeWidth="1"
+                                fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"
                             />
                         </g>
                     ))}
@@ -392,18 +392,18 @@ function BackendAnimation() {
                 {/* API Gateway */}
                 <motion.rect
                     x="85" y="35" width="30" height="30" rx="4"
-                    fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.5)" strokeWidth="1"
-                    animate={{ stroke: ["rgba(74,222,128,0.4)", "rgba(74,222,128,0.8)", "rgba(74,222,128,0.4)"] }}
+                    fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" strokeWidth="1"
+                    animate={{ stroke: ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.2)"] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                 />
-                <text x="100" y="54" textAnchor="middle" className="text-[8px] fill-green-400 font-mono">API</text>
+                <text x="100" y="54" textAnchor="middle" className="text-[8px] fill-zinc-400 font-mono">API</text>
 
                 {/* Client nodes */}
                 {[0, 1, 2].map(i => (
                     <motion.circle
                         key={i}
                         cx={160} cy={25 + i * 25} r="8"
-                        fill="rgba(34,211,238,0.1)" stroke="rgba(34,211,238,0.5)" strokeWidth="1"
+                        fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" strokeWidth="1"
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
                     />
@@ -414,15 +414,15 @@ function BackendAnimation() {
                     animate={{ strokeDashoffset: [0, -20] }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 />
-                <motion.line x1="115" y1="40" x2="152" y2="25" stroke="rgba(34,211,238,0.5)" strokeWidth="1.5" strokeDasharray="4 2"
+                <motion.line x1="115" y1="40" x2="152" y2="25" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
                     animate={{ strokeDashoffset: [0, -20] }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.2 }}
                 />
-                <motion.line x1="115" y1="50" x2="152" y2="50" stroke="rgba(34,211,238,0.5)" strokeWidth="1.5" strokeDasharray="4 2"
+                <motion.line x1="115" y1="50" x2="152" y2="50" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
                     animate={{ strokeDashoffset: [0, -20] }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.4 }}
                 />
-                <motion.line x1="115" y1="60" x2="152" y2="75" stroke="rgba(34,211,238,0.5)" strokeWidth="1.5" strokeDasharray="4 2"
+                <motion.line x1="115" y1="60" x2="152" y2="75" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
                     animate={{ strokeDashoffset: [0, -20] }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.6 }}
                 />
@@ -444,7 +444,7 @@ function RealtimeAnimation() {
             <div className="relative w-32 h-32">
                 {/* Central transmitter */}
                 <motion.div
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center"
+                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-br from-white/30 to-white/10 rounded-lg flex items-center justify-center"
                     animate={{ rotate: [0, 90, 180, 270, 360] }}
                     transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                 >
@@ -459,12 +459,12 @@ function RealtimeAnimation() {
                 {[1, 2, 3, 4].map(i => (
                     <motion.div
                         key={i}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-yellow-500/40"
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20"
                         style={{ width: 24 + i * 24, height: 24 + i * 24 }}
                         animate={{
                             scale: [1, 1.2, 1],
                             opacity: [0.6, 0.2, 0.6],
-                            borderColor: ["rgba(234,179,8,0.4)", "rgba(234,179,8,0.1)", "rgba(234,179,8,0.4)"]
+                            borderColor: ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.05)", "rgba(255,255,255,0.2)"]
                         }}
                         transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: "easeOut" }}
                     />
@@ -474,7 +474,7 @@ function RealtimeAnimation() {
                 {[0, 72, 144, 216, 288].map((angle, i) => (
                     <motion.div
                         key={i}
-                        className="absolute left-1/2 top-1/2 w-1.5 h-1.5 bg-yellow-400 rounded-full"
+                        className="absolute left-1/2 top-1/2 w-1.5 h-1.5 bg-white/50 rounded-full"
                         style={{
                             transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-48px)`
                         }}
@@ -517,7 +517,7 @@ function CloudAnimation() {
                             key={`${i}-${j}`}
                             x1={`${city.x}%`} y1={`${city.y}%`}
                             x2={`${target.x}%`} y2={`${target.y}%`}
-                            stroke="rgba(96,165,250,0.15)"
+                            stroke="rgba(255,255,255,0.1)"
                             strokeWidth="0.5"
                             strokeDasharray="2 2"
                             animate={{ strokeDashoffset: [0, -10] }}
@@ -532,20 +532,20 @@ function CloudAnimation() {
                         <motion.circle
                             cx={`${city.x}%`} cy={`${city.y}%`}
                             r="6"
-                            fill="rgba(96,165,250,0.1)"
-                            stroke="rgba(96,165,250,0.5)"
+                            fill="rgba(255,255,255,0.05)"
+                            stroke="rgba(255,255,255,0.3)"
                             strokeWidth="1"
                             filter="url(#cloudGlow)"
                             animate={{
                                 r: [6, 8, 6],
-                                fill: ["rgba(96,165,250,0.1)", "rgba(96,165,250,0.2)", "rgba(96,165,250,0.1)"]
+                                fill: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]
                             }}
                             transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                         />
                         <text
                             x={`${city.x}%`} y={`${city.y + 12}%`}
                             textAnchor="middle"
-                            className="text-[6px] fill-blue-400/70 font-mono"
+                            className="text-[6px] fill-zinc-500 font-mono"
                         >
                             {city.name}
                         </text>
@@ -555,7 +555,7 @@ function CloudAnimation() {
                 {/* Traveling packets */}
                 <motion.circle
                     r="2"
-                    fill="#60A5FA"
+                    fill="white"
                     filter="url(#cloudGlow)"
                     animate={{
                         cx: [`${cities[0].x}%`, `${cities[1].x}%`, `${cities[2].x}%`, `${cities[3].x}%`, `${cities[4].x}%`, `${cities[0].x}%`],
@@ -565,7 +565,7 @@ function CloudAnimation() {
                 />
                 <motion.circle
                     r="2"
-                    fill="#34D399"
+                    fill="rgba(255,255,255,0.6)"
                     filter="url(#cloudGlow)"
                     animate={{
                         cx: [`${cities[4].x}%`, `${cities[3].x}%`, `${cities[2].x}%`, `${cities[1].x}%`, `${cities[0].x}%`, `${cities[4].x}%`],

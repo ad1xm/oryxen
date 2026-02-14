@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Capabilities from "@/components/Capabilities";
+import GlobalReach from "@/components/GlobalReach";
 import Showcase from "@/components/Showcase";
 import TechStack from "@/components/TechStack";
 import Focus from "@/components/Focus";
@@ -20,6 +21,7 @@ export default function Home() {
       <Hero />
       <About />
       <Capabilities />
+      <GlobalReach />
       <Showcase />
       <TechStack />
       <Focus />

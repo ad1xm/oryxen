@@ -147,7 +147,7 @@ export default function GlobalReach() {
                         Delivering Worldwide
                     </h2>
                     <p className="text-zinc-500 text-lg max-w-2xl mx-auto">
-                        We ship digital products across continents, time zones, and markets — building for a borderless future.
+                        We ship digital products across continents, time zones, and markets. Building for a borderless future.
                     </p>
                 </motion.div>
 

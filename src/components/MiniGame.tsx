@@ -4,57 +4,44 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 
 // ─── Config ─────────────────────────────────────────────────────
-const CELL_SIZE = 18;
-const TICK_BASE = 130; // ms per move (lower = faster)
-const TICK_MIN = 65;   // fastest possible tick
-const FOOD_GLOW_SIZE = 8;
+const PARTICLE_COUNT = 70;
+const CONNECTION_DIST = 140;
+const MOUSE_RADIUS = 180;
+const MOUSE_FORCE = 0.02;
+const PARTICLE_SPEED = 0.3;
+const PULSE_INTERVAL = 180; // frames between pulses
 
-type Dir = "UP" | "DOWN" | "LEFT" | "RIGHT";
-type Point = { x: number; y: number };
+interface Particle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    baseSize: number;
+    size: number;
+    alpha: number;
+    pulsePhase: number;
+}
 
-const DIR_MAP: Record<Dir, Point> = {
-    UP: { x: 0, y: -1 },
-    DOWN: { x: 0, y: 1 },
-    LEFT: { x: -1, y: 0 },
-    RIGHT: { x: 1, y: 0 },
-};
+interface Pulse {
+    x: number;
+    y: number;
+    radius: number;
+    maxRadius: number;
+    life: number;
+}
 
-const OPPOSITE: Record<Dir, Dir> = {
-    UP: "DOWN", DOWN: "UP", LEFT: "RIGHT", RIGHT: "LEFT",
-};
-
-export default function MiniGame() {
+export default function NeuralMesh() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
 
-    const [gameState, setGameState] = useState<"idle" | "playing" | "dead">("idle");
-    const [highScore, setHighScore] = useState(0);
+    const particlesRef = useRef<Particle[]>([]);
+    const pulsesRef = useRef<Pulse[]>([]);
+    const mouseRef = useRef({ x: -999, y: -999, active: false });
+    const animId = useRef(0);
+    const frameRef = useRef(0);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Game refs (mutable state for the game loop)
-    const gsRef = useRef(gameState);
-    const scoreRef = useRef(0);
-    const highRef = useRef(0);
-    const snakeRef = useRef<Point[]>([]);
-    const dirRef = useRef<Dir>("RIGHT");
-    const nextDirRef = useRef<Dir>("RIGHT");
-    const foodRef = useRef<Point>({ x: 5, y: 5 });
-    const gridW = useRef(20);
-    const gridH = useRef(15);
-    const lastTick = useRef(0);
-    const animId = useRef(0);
-    const foodPulse = useRef(0);
-
-    // Swipe tracking
-    const touchStart = useRef<{ x: number; y: number } | null>(null);
-
-    // Small eat particles (very lightweight)
-    const eatParticles = useRef<{ x: number; y: number; vx: number; vy: number; life: number }[]>([]);
-
-    useEffect(() => { gsRef.current = gameState; }, [gameState]);
-
-    // Detect mobile
     useEffect(() => {
         const check = () => setIsMobile(window.innerWidth < 768);
         check();
@@ -62,117 +49,19 @@ export default function MiniGame() {
         return () => window.removeEventListener("resize", check);
     }, []);
 
-    // Load high score
-    useEffect(() => {
-        const saved = localStorage.getItem("oryxen-snake-high");
-        if (saved) { highRef.current = parseInt(saved); setHighScore(parseInt(saved)); }
+    const initParticles = useCallback((w: number, h: number) => {
+        const count = w < 768 ? Math.floor(PARTICLE_COUNT * 0.6) : PARTICLE_COUNT;
+        particlesRef.current = Array.from({ length: count }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * PARTICLE_SPEED * 2,
+            vy: (Math.random() - 0.5) * PARTICLE_SPEED * 2,
+            baseSize: Math.random() * 1.8 + 0.6,
+            size: 0,
+            alpha: Math.random() * 0.4 + 0.15,
+            pulsePhase: Math.random() * Math.PI * 2,
+        }));
     }, []);
-
-    // Place food at random empty cell
-    const placeFood = useCallback(() => {
-        const snake = snakeRef.current;
-        const occupied = new Set(snake.map(p => `${p.x},${p.y}`));
-        const empty: Point[] = [];
-        for (let x = 0; x < gridW.current; x++) {
-            for (let y = 0; y < gridH.current; y++) {
-                if (!occupied.has(`${x},${y}`)) empty.push({ x, y });
-            }
-        }
-        if (empty.length > 0) {
-            foodRef.current = empty[Math.floor(Math.random() * empty.length)];
-        }
-    }, []);
-
-    // Start game
-    const startGame = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        // Compute grid
-        const cellSize = isMobile ? 14 : CELL_SIZE;
-        gridW.current = Math.floor(canvas.width / cellSize);
-        gridH.current = Math.floor(canvas.height / cellSize);
-
-        // Center snake
-        const cx = Math.floor(gridW.current / 2);
-        const cy = Math.floor(gridH.current / 2);
-        snakeRef.current = [
-            { x: cx, y: cy },
-            { x: cx - 1, y: cy },
-            { x: cx - 2, y: cy },
-        ];
-
-        dirRef.current = "RIGHT";
-        nextDirRef.current = "RIGHT";
-        scoreRef.current = 0;
-        eatParticles.current = [];
-
-        placeFood();
-        lastTick.current = performance.now();
-        setGameState("playing");
-    }, [isMobile, placeFood]);
-
-    // ─── Input Handlers ───────────────────────────────────────────
-    useEffect(() => {
-        const setDir = (d: Dir) => {
-            if (OPPOSITE[d] !== dirRef.current) {
-                nextDirRef.current = d;
-            }
-        };
-
-        const handleKey = (e: KeyboardEvent) => {
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (gsRef.current !== "playing") startGame();
-                return;
-            }
-            const map: Record<string, Dir> = {
-                ArrowUp: "UP", ArrowDown: "DOWN", ArrowLeft: "LEFT", ArrowRight: "RIGHT",
-                KeyW: "UP", KeyS: "DOWN", KeyA: "LEFT", KeyD: "RIGHT",
-            };
-            if (map[e.code]) {
-                e.preventDefault();
-                setDir(map[e.code]);
-            }
-        };
-
-        const handleTouchStart = (e: TouchEvent) => {
-            if (e.touches.length > 0) {
-                touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-        };
-
-        const handleTouchEnd = (e: TouchEvent) => {
-            if (!touchStart.current || e.changedTouches.length === 0) return;
-            const dx = e.changedTouches[0].clientX - touchStart.current.x;
-            const dy = e.changedTouches[0].clientY - touchStart.current.y;
-            const absDx = Math.abs(dx);
-            const absDy = Math.abs(dy);
-
-            // Minimum swipe distance
-            if (Math.max(absDx, absDy) < 20) {
-                // Tap — start game if not playing
-                if (gsRef.current !== "playing") startGame();
-                return;
-            }
-
-            if (absDx > absDy) {
-                setDir(dx > 0 ? "RIGHT" : "LEFT");
-            } else {
-                setDir(dy > 0 ? "DOWN" : "UP");
-            }
-            touchStart.current = null;
-        };
-
-        window.addEventListener("keydown", handleKey);
-        window.addEventListener("touchstart", handleTouchStart, { passive: true });
-        window.addEventListener("touchend", handleTouchEnd, { passive: true });
-        return () => {
-            window.removeEventListener("keydown", handleKey);
-            window.removeEventListener("touchstart", handleTouchStart);
-            window.removeEventListener("touchend", handleTouchEnd);
-        };
-    }, [startGame]);
 
     // ─── Game Loop ────────────────────────────────────────────────
     useEffect(() => {
@@ -187,249 +76,264 @@ export default function MiniGame() {
             const rect = el.getBoundingClientRect();
             canvas.width = rect.width;
             canvas.height = rect.height;
+            if (particlesRef.current.length === 0) {
+                initParticles(canvas.width, canvas.height);
+            }
         };
         resize();
         window.addEventListener("resize", resize);
 
-        let idleT = 0;
+        // Mouse handlers
+        const handleMouse = (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseRef.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                active: true,
+            };
+        };
+        const handleMouseLeave = () => {
+            mouseRef.current.active = false;
+        };
+        const handleTouch = (e: TouchEvent) => {
+            if (e.touches.length > 0) {
+                const rect = canvas.getBoundingClientRect();
+                mouseRef.current = {
+                    x: e.touches[0].clientX - rect.left,
+                    y: e.touches[0].clientY - rect.top,
+                    active: true,
+                };
+            }
+        };
+        const handleTouchEnd = () => {
+            mouseRef.current.active = false;
+        };
 
-        const loop = (now: number) => {
+        canvas.addEventListener("mousemove", handleMouse);
+        canvas.addEventListener("mouseleave", handleMouseLeave);
+        canvas.addEventListener("touchmove", handleTouch, { passive: true });
+        canvas.addEventListener("touchstart", handleTouch, { passive: true });
+        canvas.addEventListener("touchend", handleTouchEnd);
+
+        const loop = () => {
             const w = canvas.width;
             const h = canvas.height;
-            const state = gsRef.current;
-            const cellSize = w < 768 ? 14 : CELL_SIZE;
-
-            // Recompute grid size each frame (handles resize)
-            gridW.current = Math.floor(w / cellSize);
-            gridH.current = Math.floor(h / cellSize);
-
-            // Grid offset to center
-            const offsetX = Math.floor((w - gridW.current * cellSize) / 2);
-            const offsetY = Math.floor((h - gridH.current * cellSize) / 2);
-
-            // ─── Tick (move snake) ─────────────────
-            if (state === "playing") {
-                const tickSpeed = Math.max(TICK_MIN, TICK_BASE - snakeRef.current.length * 1.5);
-                if (now - lastTick.current >= tickSpeed) {
-                    lastTick.current = now;
-                    dirRef.current = nextDirRef.current;
-                    const head = snakeRef.current[0];
-                    const d = DIR_MAP[dirRef.current];
-                    const newHead: Point = { x: head.x + d.x, y: head.y + d.y };
-
-                    // Check wall collision
-                    if (newHead.x < 0 || newHead.x >= gridW.current ||
-                        newHead.y < 0 || newHead.y >= gridH.current) {
-                        // Die
-                        setGameState("dead");
-                        if (scoreRef.current > highRef.current) {
-                            highRef.current = scoreRef.current;
-                            setHighScore(scoreRef.current);
-                            localStorage.setItem("oryxen-snake-high", scoreRef.current.toString());
-                        }
-                    }
-                    // Check self collision
-                    else if (snakeRef.current.some(p => p.x === newHead.x && p.y === newHead.y)) {
-                        setGameState("dead");
-                        if (scoreRef.current > highRef.current) {
-                            highRef.current = scoreRef.current;
-                            setHighScore(scoreRef.current);
-                            localStorage.setItem("oryxen-snake-high", scoreRef.current.toString());
-                        }
-                    } else {
-                        snakeRef.current.unshift(newHead);
-
-                        // Check food
-                        if (newHead.x === foodRef.current.x && newHead.y === foodRef.current.y) {
-                            scoreRef.current += 10;
-
-                            // Small eat particles
-                            const fx = offsetX + foodRef.current.x * cellSize + cellSize / 2;
-                            const fy = offsetY + foodRef.current.y * cellSize + cellSize / 2;
-                            for (let i = 0; i < 8; i++) {
-                                const angle = (Math.PI * 2 * i) / 8;
-                                eatParticles.current.push({
-                                    x: fx, y: fy,
-                                    vx: Math.cos(angle) * (1.5 + Math.random()),
-                                    vy: Math.sin(angle) * (1.5 + Math.random()),
-                                    life: 1,
-                                });
-                            }
-
-                            placeFood();
-                            // Don't pop tail (snake grows)
-                        } else {
-                            snakeRef.current.pop();
-                        }
-                    }
-                }
-            }
+            const particles = particlesRef.current;
+            const mouse = mouseRef.current;
+            frameRef.current++;
+            const t = frameRef.current;
 
             // ─── Clear ────────────────────────────────
             ctx.fillStyle = "#0a0a0a";
             ctx.fillRect(0, 0, w, h);
 
-            // ─── Grid lines (subtle) ──────────────────
-            ctx.strokeStyle = "rgba(255,255,255,0.02)";
-            ctx.lineWidth = 0.5;
-            for (let x = 0; x <= gridW.current; x++) {
-                ctx.beginPath();
-                ctx.moveTo(offsetX + x * cellSize, offsetY);
-                ctx.lineTo(offsetX + x * cellSize, offsetY + gridH.current * cellSize);
-                ctx.stroke();
-            }
-            for (let y = 0; y <= gridH.current; y++) {
-                ctx.beginPath();
-                ctx.moveTo(offsetX, offsetY + y * cellSize);
-                ctx.lineTo(offsetX + gridW.current * cellSize, offsetY + y * cellSize);
-                ctx.stroke();
+            // ─── Spawn periodic pulses ────────────────
+            if (t % PULSE_INTERVAL === 0 && particles.length > 0) {
+                const src = particles[Math.floor(Math.random() * particles.length)];
+                pulsesRef.current.push({
+                    x: src.x,
+                    y: src.y,
+                    radius: 0,
+                    maxRadius: 200 + Math.random() * 150,
+                    life: 1,
+                });
             }
 
-            // ─── Border ───────────────────────────────
-            ctx.strokeStyle = "rgba(255,255,255,0.06)";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(offsetX, offsetY, gridW.current * cellSize, gridH.current * cellSize);
+            // ─── Update pulses ────────────────────────
+            pulsesRef.current.forEach(p => {
+                p.radius += 1.8;
+                p.life = Math.max(0, 1 - p.radius / p.maxRadius);
+            });
+            pulsesRef.current = pulsesRef.current.filter(p => p.life > 0);
 
-            // ─── Food ─────────────────────────────────
-            foodPulse.current += 0.04;
-            const fp = foodRef.current;
-            const fx = offsetX + fp.x * cellSize;
-            const fy = offsetY + fp.y * cellSize;
-            const pulse = 0.5 + 0.5 * Math.sin(foodPulse.current);
+            // ─── Update particles ─────────────────────
+            particles.forEach(p => {
+                // Breathing size
+                p.size = p.baseSize * (0.8 + 0.2 * Math.sin(t * 0.015 + p.pulsePhase));
 
-            if (state === "playing" || state === "idle") {
-                // Food glow
+                // Movement
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Boundary wrap
+                if (p.x < -10) p.x = w + 10;
+                if (p.x > w + 10) p.x = -10;
+                if (p.y < -10) p.y = h + 10;
+                if (p.y > h + 10) p.y = -10;
+
+                // Mouse interaction — gentle attraction
+                if (mouse.active) {
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < MOUSE_RADIUS && dist > 1) {
+                        const force = MOUSE_FORCE * (1 - dist / MOUSE_RADIUS);
+                        p.vx += (dx / dist) * force;
+                        p.vy += (dy / dist) * force;
+                    }
+                }
+
+                // Gentle damping
+                p.vx *= 0.998;
+                p.vy *= 0.998;
+
+                // Speed limit
+                const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                if (speed > PARTICLE_SPEED * 3) {
+                    p.vx = (p.vx / speed) * PARTICLE_SPEED * 3;
+                    p.vy = (p.vy / speed) * PARTICLE_SPEED * 3;
+                }
+            });
+
+            // ─── Draw connections ─────────────────────
+            const connDist = w < 768 ? CONNECTION_DIST * 0.75 : CONNECTION_DIST;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i];
+                    const b = particles[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < connDist) {
+                        const alpha = (1 - dist / connDist) * 0.12;
+
+                        // Check if any pulse is passing through this connection
+                        let pulseBoost = 0;
+                        const midX = (a.x + b.x) / 2;
+                        const midY = (a.y + b.y) / 2;
+                        pulsesRef.current.forEach(pulse => {
+                            const pd = Math.sqrt(
+                                (midX - pulse.x) ** 2 + (midY - pulse.y) ** 2
+                            );
+                            if (Math.abs(pd - pulse.radius) < 30) {
+                                pulseBoost = Math.max(pulseBoost, pulse.life * 0.3);
+                            }
+                        });
+
+                        ctx.strokeStyle = `rgba(255,255,255,${alpha + pulseBoost})`;
+                        ctx.lineWidth = 0.5 + pulseBoost * 2;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // ─── Draw mouse connections ───────────────
+            if (mouse.active) {
+                particles.forEach(p => {
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < MOUSE_RADIUS) {
+                        const alpha = (1 - dist / MOUSE_RADIUS) * 0.15;
+                        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+                        ctx.lineWidth = 0.4;
+                        ctx.beginPath();
+                        ctx.moveTo(mouse.x, mouse.y);
+                        ctx.lineTo(p.x, p.y);
+                        ctx.stroke();
+                    }
+                });
+
+                // Mouse glow
                 const glow = ctx.createRadialGradient(
-                    fx + cellSize / 2, fy + cellSize / 2, 0,
-                    fx + cellSize / 2, fy + cellSize / 2, cellSize + FOOD_GLOW_SIZE * pulse,
+                    mouse.x, mouse.y, 0,
+                    mouse.x, mouse.y, 60
                 );
-                glow.addColorStop(0, `rgba(255,255,255,${0.08 + 0.04 * pulse})`);
+                glow.addColorStop(0, "rgba(255,255,255,0.04)");
                 glow.addColorStop(1, "transparent");
                 ctx.fillStyle = glow;
                 ctx.beginPath();
-                ctx.arc(fx + cellSize / 2, fy + cellSize / 2, cellSize + FOOD_GLOW_SIZE * pulse, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Food cell
-                const pad = 2;
-                ctx.fillStyle = `rgba(255,255,255,${0.6 + 0.2 * pulse})`;
-                ctx.beginPath();
-                ctx.roundRect(fx + pad, fy + pad, cellSize - pad * 2, cellSize - pad * 2, 3);
+                ctx.arc(mouse.x, mouse.y, 60, 0, Math.PI * 2);
                 ctx.fill();
             }
 
-            // ─── Snake ────────────────────────────────
-            const snake = state === "idle" ? getIdleSnake(gridW.current, gridH.current, idleT++) : snakeRef.current;
-
-            snake.forEach((seg, i) => {
-                const sx = offsetX + seg.x * cellSize;
-                const sy = offsetY + seg.y * cellSize;
-                const pad = 1;
-
-                // Head is brighter
-                const isHead = i === 0;
-                const alpha = isHead ? 0.85 : Math.max(0.12, 0.5 - i * 0.015);
-
-                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+            // ─── Draw pulse rings ─────────────────────
+            pulsesRef.current.forEach(pulse => {
+                ctx.strokeStyle = `rgba(255,255,255,${pulse.life * 0.06})`;
+                ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.roundRect(sx + pad, sy + pad, cellSize - pad * 2, cellSize - pad * 2, isHead ? 4 : 2);
-                ctx.fill();
+                ctx.arc(pulse.x, pulse.y, pulse.radius, 0, Math.PI * 2);
+                ctx.stroke();
+            });
 
-                // Head glow
-                if (isHead && state === "playing") {
-                    const hGlow = ctx.createRadialGradient(
-                        sx + cellSize / 2, sy + cellSize / 2, 0,
-                        sx + cellSize / 2, sy + cellSize / 2, cellSize * 1.5,
+            // ─── Draw particles ───────────────────────
+            particles.forEach(p => {
+                // Check pulse proximity for brightness boost
+                let boost = 0;
+                pulsesRef.current.forEach(pulse => {
+                    const pd = Math.sqrt((p.x - pulse.x) ** 2 + (p.y - pulse.y) ** 2);
+                    if (Math.abs(pd - pulse.radius) < 20) {
+                        boost = Math.max(boost, pulse.life * 0.5);
+                    }
+                });
+
+                // Particle glow
+                if (p.size > 1 || boost > 0) {
+                    const glowSize = (p.size + boost * 4) * 6;
+                    const glow = ctx.createRadialGradient(
+                        p.x, p.y, 0,
+                        p.x, p.y, glowSize
                     );
-                    hGlow.addColorStop(0, "rgba(255,255,255,0.08)");
-                    hGlow.addColorStop(1, "transparent");
-                    ctx.fillStyle = hGlow;
+                    glow.addColorStop(0, `rgba(255,255,255,${(p.alpha * 0.15) + boost * 0.1})`);
+                    glow.addColorStop(1, "transparent");
+                    ctx.fillStyle = glow;
                     ctx.beginPath();
-                    ctx.arc(sx + cellSize / 2, sy + cellSize / 2, cellSize * 1.5, 0, Math.PI * 2);
+                    ctx.arc(p.x, p.y, glowSize, 0, Math.PI * 2);
                     ctx.fill();
                 }
-            });
 
-            // ─── Particles ────────────────────────────
-            eatParticles.current.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= 0.04;
-                ctx.fillStyle = `rgba(255,255,255,${p.life * 0.6})`;
+                // Particle dot
+                ctx.fillStyle = `rgba(255,255,255,${p.alpha + boost})`;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, 1.5 * p.life, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, p.size + boost * 2, 0, Math.PI * 2);
                 ctx.fill();
             });
-            eatParticles.current = eatParticles.current.filter(p => p.life > 0);
 
-            // ─── HUD (drawn on canvas, no React state) ──
-            if (state === "playing") {
-                ctx.textAlign = "right";
+            // ─── Scanline effect (very subtle) ────────
+            const scanY = (t * 0.5) % h;
+            const scanGrad = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
+            scanGrad.addColorStop(0, "transparent");
+            scanGrad.addColorStop(0.5, "rgba(255,255,255,0.008)");
+            scanGrad.addColorStop(1, "transparent");
+            ctx.fillStyle = scanGrad;
+            ctx.fillRect(0, scanY - 30, w, 60);
 
-                ctx.font = "600 9px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.25)";
-                ctx.fillText("LENGTH", w - 80, 28);
-                ctx.font = "300 14px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.35)";
-                ctx.fillText(snakeRef.current.length.toString(), w - 80, 44);
+            // ─── Corner accents ───────────────────────
+            const cornerSize = 30;
+            ctx.strokeStyle = "rgba(255,255,255,0.08)";
+            ctx.lineWidth = 1;
 
-                ctx.font = "600 9px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.25)";
-                ctx.fillText("SCORE", w - 20, 28);
-                ctx.font = "300 18px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.5)";
-                ctx.fillText(scoreRef.current.toString(), w - 20, 46);
-            }
+            // Top-left
+            ctx.beginPath();
+            ctx.moveTo(1, cornerSize);
+            ctx.lineTo(1, 1);
+            ctx.lineTo(cornerSize, 1);
+            ctx.stroke();
 
-            // ─── UI Overlays ──────────────────────────
-            if (state === "idle") {
-                ctx.font = "600 22px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.7)";
-                ctx.textAlign = "center";
-                ctx.fillText("NEON   SNAKE", w / 2, h / 2 - 10);
+            // Top-right
+            ctx.beginPath();
+            ctx.moveTo(w - cornerSize, 1);
+            ctx.lineTo(w - 1, 1);
+            ctx.lineTo(w - 1, cornerSize);
+            ctx.stroke();
 
-                ctx.font = "300 12px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.25)";
-                const isTouchDevice = "ontouchstart" in window;
-                ctx.fillText(
-                    isTouchDevice ? "Tap to start  ·  Swipe to steer" : "Press Space to start  ·  Arrow keys to steer",
-                    w / 2, h / 2 + 15,
-                );
+            // Bottom-left
+            ctx.beginPath();
+            ctx.moveTo(1, h - cornerSize);
+            ctx.lineTo(1, h - 1);
+            ctx.lineTo(cornerSize, h - 1);
+            ctx.stroke();
 
-                if (highRef.current > 0) {
-                    ctx.font = "400 11px 'Inter', system-ui, sans-serif";
-                    ctx.fillStyle = "rgba(255,255,255,0.15)";
-                    ctx.fillText(`Best: ${highRef.current}`, w / 2, h / 2 + 40);
-                }
-            }
-
-            if (state === "dead") {
-                ctx.fillStyle = "rgba(0,0,0,0.4)";
-                ctx.fillRect(0, 0, w, h);
-
-                ctx.font = "600 20px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.6)";
-                ctx.textAlign = "center";
-                ctx.fillText("GAME   OVER", w / 2, h / 2 - 35);
-
-                ctx.font = "bold 42px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.4)";
-                ctx.fillText(scoreRef.current.toString(), w / 2, h / 2 + 12);
-
-                ctx.font = "400 11px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.2)";
-                ctx.fillText(`Length: ${snakeRef.current.length}`, w / 2, h / 2 + 32);
-
-                if (scoreRef.current >= highRef.current && scoreRef.current > 0) {
-                    ctx.fillStyle = "rgba(255,200,50,0.5)";
-                    ctx.fillText("NEW RECORD!", w / 2, h / 2 + 50);
-                }
-
-                ctx.font = "300 12px 'Inter', system-ui, sans-serif";
-                ctx.fillStyle = "rgba(255,255,255,0.2)";
-                const isTouchDevice = "ontouchstart" in window;
-                ctx.fillText(isTouchDevice ? "Tap to retry" : "Space to retry", w / 2, h / 2 + 75);
-            }
+            // Bottom-right
+            ctx.beginPath();
+            ctx.moveTo(w - cornerSize, h - 1);
+            ctx.lineTo(w - 1, h - 1);
+            ctx.lineTo(w - 1, h - cornerSize);
+            ctx.stroke();
 
             animId.current = requestAnimationFrame(loop);
         };
@@ -438,12 +342,13 @@ export default function MiniGame() {
         return () => {
             cancelAnimationFrame(animId.current);
             window.removeEventListener("resize", resize);
+            canvas.removeEventListener("mousemove", handleMouse);
+            canvas.removeEventListener("mouseleave", handleMouseLeave);
+            canvas.removeEventListener("touchmove", handleTouch);
+            canvas.removeEventListener("touchstart", handleTouch);
+            canvas.removeEventListener("touchend", handleTouchEnd);
         };
-    }, [placeFood]);
-
-    const handleClick = useCallback(() => {
-        if (gsRef.current !== "playing") startGame();
-    }, [startGame]);
+    }, [initParticles]);
 
     return (
         <section
@@ -457,13 +362,13 @@ export default function MiniGame() {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-3">
-                        Take a Break
+                        The Network
                     </h2>
                     <h3 className="text-2xl md:text-3xl text-white font-medium tracking-tight mb-2">
-                        Neon Snake
+                        Connected Intelligence
                     </h3>
                     <p className="text-zinc-500 text-sm max-w-md">
-                        Eat. Grow. Survive. How long can you last?
+                        Every node is a decision. Every connection, a possibility. Move your cursor to interact.
                     </p>
                 </motion.div>
             </div>
@@ -476,55 +381,41 @@ export default function MiniGame() {
             >
                 <div
                     className="relative rounded-2xl border border-zinc-800/50 overflow-hidden bg-[#0a0a0a]"
-                    style={{ height: isMobile ? "400px" : "480px" }}
+                    style={{ height: isMobile ? "360px" : "480px" }}
                 >
                     <canvas
                         ref={canvasRef}
-                        className="w-full h-full cursor-pointer outline-none touch-none"
-                        onClick={handleClick}
-                        onTouchStart={handleClick}
+                        className="w-full h-full cursor-crosshair outline-none touch-none"
                     />
 
-                    {/* High score badge */}
-                    {highScore > 0 && gameState !== "playing" && (
-                        <motion.div
-                            className="absolute top-4 right-4 pointer-events-none"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                        >
-                            <div className="text-right">
-                                <div className="text-[9px] text-zinc-600 tracking-widest">BEST</div>
-                                <div className="text-sm font-light text-white/30">{highScore}</div>
-                            </div>
-                        </motion.div>
-                    )}
+                    {/* Floating label — bottom-right */}
+                    <motion.div
+                        className="absolute bottom-4 right-5 pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        animate={isInView ? { opacity: 1 } : {}}
+                        transition={{ delay: 1.2, duration: 0.8 }}
+                    >
+                        <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse" />
+                            <span className="text-[10px] font-mono text-zinc-600 tracking-widest uppercase">
+                                Live · Neural Mesh
+                            </span>
+                        </div>
+                    </motion.div>
+
+                    {/* Node count — top-left */}
+                    <motion.div
+                        className="absolute top-4 left-5 pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        animate={isInView ? { opacity: 1 } : {}}
+                        transition={{ delay: 1, duration: 0.8 }}
+                    >
+                        <div className="text-[9px] font-mono text-zinc-600 tracking-widest">
+                            NODES: {isMobile ? Math.floor(PARTICLE_COUNT * 0.6) : PARTICLE_COUNT}
+                        </div>
+                    </motion.div>
                 </div>
             </motion.div>
         </section>
     );
-}
-
-// ─── Idle demo snake (deterministic looping path) ──────────────
-function getIdleSnake(gw: number, gh: number, t: number): Point[] {
-    // Create a simple looping path in the center
-    const cx = Math.floor(gw / 2);
-    const cy = Math.floor(gh / 2);
-    const radius = 4;
-    const path: Point[] = [];
-
-    // Build a rectangle path
-    for (let x = cx - radius; x <= cx + radius; x++) path.push({ x, y: cy - radius });
-    for (let y = cy - radius + 1; y <= cy + radius; y++) path.push({ x: cx + radius, y });
-    for (let x = cx + radius - 1; x >= cx - radius; x--) path.push({ x, y: cy + radius });
-    for (let y = cy + radius - 1; y > cy - radius; y--) path.push({ x: cx - radius, y });
-
-    const len = 8;
-    const offset = Math.floor(t / 6) % path.length;
-    const snake: Point[] = [];
-    for (let i = 0; i < len; i++) {
-        const idx = (offset - i + path.length * 10) % path.length;
-        snake.push(path[idx]);
-    }
-    return snake;
 }

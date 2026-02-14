@@ -29,7 +29,6 @@ export default function MiniGame() {
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
 
     const [gameState, setGameState] = useState<"idle" | "playing" | "dead">("idle");
-    const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -107,7 +106,6 @@ export default function MiniGame() {
         nextDirRef.current = "RIGHT";
         scoreRef.current = 0;
         eatParticles.current = [];
-        setScore(0);
 
         placeFood();
         lastTick.current = performance.now();
@@ -244,7 +242,6 @@ export default function MiniGame() {
                         // Check food
                         if (newHead.x === foodRef.current.x && newHead.y === foodRef.current.y) {
                             scoreRef.current += 10;
-                            setScore(scoreRef.current);
 
                             // Small eat particles
                             const fx = offsetX + foodRef.current.x * cellSize + cellSize / 2;
@@ -365,6 +362,25 @@ export default function MiniGame() {
             });
             eatParticles.current = eatParticles.current.filter(p => p.life > 0);
 
+            // ─── HUD (drawn on canvas, no React state) ──
+            if (state === "playing") {
+                ctx.textAlign = "right";
+
+                ctx.font = "600 9px 'Inter', system-ui, sans-serif";
+                ctx.fillStyle = "rgba(255,255,255,0.25)";
+                ctx.fillText("LENGTH", w - 80, 28);
+                ctx.font = "300 14px 'Inter', system-ui, sans-serif";
+                ctx.fillStyle = "rgba(255,255,255,0.35)";
+                ctx.fillText(snakeRef.current.length.toString(), w - 80, 44);
+
+                ctx.font = "600 9px 'Inter', system-ui, sans-serif";
+                ctx.fillStyle = "rgba(255,255,255,0.25)";
+                ctx.fillText("SCORE", w - 20, 28);
+                ctx.font = "300 18px 'Inter', system-ui, sans-serif";
+                ctx.fillStyle = "rgba(255,255,255,0.5)";
+                ctx.fillText(scoreRef.current.toString(), w - 20, 46);
+            }
+
             // ─── UI Overlays ──────────────────────────
             if (state === "idle") {
                 ctx.font = "600 22px 'Inter', system-ui, sans-serif";
@@ -468,22 +484,6 @@ export default function MiniGame() {
                         onClick={handleClick}
                         onTouchStart={handleClick}
                     />
-
-                    {/* Score overlay */}
-                    {gameState === "playing" && (
-                        <div className="absolute top-4 right-4 flex items-center gap-5 pointer-events-none">
-                            <div className="text-right">
-                                <div className="text-[9px] text-zinc-600 tracking-widest">LENGTH</div>
-                                <div className="text-sm font-light text-white/40 tabular-nums">
-                                    {snakeRef.current.length}
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-[9px] text-zinc-600 tracking-widest">SCORE</div>
-                                <div className="text-lg font-light text-white/60 tabular-nums">{score}</div>
-                            </div>
-                        </div>
-                    )}
 
                     {/* High score badge */}
                     {highScore > 0 && gameState !== "playing" && (

@@ -4,210 +4,179 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 
 // ─── Config ─────────────────────────────────────────────────────
-const PADDLE_HEIGHT = 12;
-const BALL_RADIUS = 6;
-const BALL_SPEED_BASE = 4.5;
-const BRICK_ROWS = 5;
-const BRICK_COLS = 10;
-const BRICK_PADDING = 4;
-const STAR_COUNT = 60;
+const CELL_SIZE = 18;
+const TICK_BASE = 130; // ms per move (lower = faster)
+const TICK_MIN = 65;   // fastest possible tick
+const FOOD_GLOW_SIZE = 8;
 
-interface Brick {
-    x: number; y: number;
-    w: number; h: number;
-    alive: boolean;
-    hits: number;      // hits remaining
-    maxHits: number;
-}
+type Dir = "UP" | "DOWN" | "LEFT" | "RIGHT";
+type Point = { x: number; y: number };
 
-interface Particle {
-    x: number; y: number;
-    vx: number; vy: number;
-    life: number;
-    size: number;
-    brightness: number;
-}
+const DIR_MAP: Record<Dir, Point> = {
+    UP: { x: 0, y: -1 },
+    DOWN: { x: 0, y: 1 },
+    LEFT: { x: -1, y: 0 },
+    RIGHT: { x: 1, y: 0 },
+};
 
-interface Star {
-    x: number; y: number;
-    size: number; alpha: number;
-    twinkle: number; phase: number;
-}
+const OPPOSITE: Record<Dir, Dir> = {
+    UP: "DOWN", DOWN: "UP", LEFT: "RIGHT", RIGHT: "LEFT",
+};
 
 export default function MiniGame() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
 
-    const [gameState, setGameState] = useState<"idle" | "playing" | "won" | "dead">("idle");
+    const [gameState, setGameState] = useState<"idle" | "playing" | "dead">("idle");
     const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(0);
-    const [level, setLevel] = useState(1);
     const [isMobile, setIsMobile] = useState(false);
 
+    // Game refs (mutable state for the game loop)
     const gsRef = useRef(gameState);
     const scoreRef = useRef(0);
     const highRef = useRef(0);
-    const levelRef = useRef(1);
-    const paddleX = useRef(0);
-    const paddleW = useRef(100);
-    const ballX = useRef(0);
-    const ballY = useRef(0);
-    const ballVX = useRef(0);
-    const ballVY = useRef(0);
-    const bricks = useRef<Brick[]>([]);
-    const particles = useRef<Particle[]>([]);
-    const starsArr = useRef<Star[]>([]);
+    const snakeRef = useRef<Point[]>([]);
+    const dirRef = useRef<Dir>("RIGHT");
+    const nextDirRef = useRef<Dir>("RIGHT");
+    const foodRef = useRef<Point>({ x: 5, y: 5 });
+    const gridW = useRef(20);
+    const gridH = useRef(15);
+    const lastTick = useRef(0);
     const animId = useRef(0);
-    const shakeRef = useRef(0);
-    const comboRef = useRef(0);
-    const comboTimer = useRef(0);
-    const mouseX = useRef(0);
-    const livesRef = useRef(3);
-    const [lives, setLives] = useState(3);
+    const foodPulse = useRef(0);
+
+    // Swipe tracking
+    const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+    // Small eat particles (very lightweight)
+    const eatParticles = useRef<{ x: number; y: number; vx: number; vy: number; life: number }[]>([]);
 
     useEffect(() => { gsRef.current = gameState; }, [gameState]);
 
+    // Detect mobile
     useEffect(() => {
-        setIsMobile(window.innerWidth < 768);
-        const h = () => setIsMobile(window.innerWidth < 768);
-        window.addEventListener("resize", h);
-        return () => window.removeEventListener("resize", h);
+        const check = () => setIsMobile(window.innerWidth < 768);
+        check();
+        window.addEventListener("resize", check);
+        return () => window.removeEventListener("resize", check);
     }, []);
 
+    // Load high score
     useEffect(() => {
-        const saved = localStorage.getItem("oryxen-breakout-high");
+        const saved = localStorage.getItem("oryxen-snake-high");
         if (saved) { highRef.current = parseInt(saved); setHighScore(parseInt(saved)); }
     }, []);
 
-    const initStars = useCallback((w: number, h: number) => {
-        starsArr.current = Array.from({ length: STAR_COUNT }, () => ({
-            x: Math.random() * w, y: Math.random() * h,
-            size: Math.random() * 1.2 + 0.3,
-            alpha: Math.random() * 0.25 + 0.05,
-            twinkle: Math.random() * 0.02 + 0.005,
-            phase: Math.random() * Math.PI * 2,
-        }));
-    }, []);
-
-    const spawnBrickParticles = useCallback((bx: number, by: number, bw: number, bh: number, brightness: number) => {
-        const count = 12;
-        for (let i = 0; i < count; i++) {
-            const a = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-            const sp = Math.random() * 3 + 1;
-            particles.current.push({
-                x: bx + bw / 2 + (Math.random() - 0.5) * bw * 0.5,
-                y: by + bh / 2 + (Math.random() - 0.5) * bh * 0.5,
-                vx: Math.cos(a) * sp,
-                vy: Math.sin(a) * sp,
-                life: 1,
-                size: Math.random() * 2.5 + 0.5,
-                brightness,
-            });
-        }
-    }, []);
-
-    const buildLevel = useCallback((w: number, h: number, lvl: number) => {
-        const brickArea = w - 40;
-        const bw = (brickArea - (BRICK_COLS - 1) * BRICK_PADDING) / BRICK_COLS;
-        const bh = 16;
-        const topOffset = 60;
-        const rows = Math.min(BRICK_ROWS + Math.floor((lvl - 1) * 0.5), 8);
-        const newBricks: Brick[] = [];
-
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < BRICK_COLS; c++) {
-                const x = 20 + c * (bw + BRICK_PADDING);
-                const y = topOffset + r * (bh + BRICK_PADDING);
-                // Higher rows have more hits
-                const maxHits = r < 2 ? (lvl > 2 ? 2 : 1) : 1;
-                // Create patterns - some gaps for visual interest
-                const hasGap = lvl > 1 && ((r + c) % (7 - Math.min(lvl, 4)) === 0);
-                if (!hasGap) {
-                    newBricks.push({ x, y, w: bw, h: bh, alive: true, hits: maxHits, maxHits });
-                }
+    // Place food at random empty cell
+    const placeFood = useCallback(() => {
+        const snake = snakeRef.current;
+        const occupied = new Set(snake.map(p => `${p.x},${p.y}`));
+        const empty: Point[] = [];
+        for (let x = 0; x < gridW.current; x++) {
+            for (let y = 0; y < gridH.current; y++) {
+                if (!occupied.has(`${x},${y}`)) empty.push({ x, y });
             }
         }
-        return newBricks;
+        if (empty.length > 0) {
+            foodRef.current = empty[Math.floor(Math.random() * empty.length)];
+        }
     }, []);
 
-    const resetBall = useCallback((w: number, h: number) => {
-        ballX.current = w / 2;
-        ballY.current = h - 80;
-        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.8;
-        const speed = BALL_SPEED_BASE + (levelRef.current - 1) * 0.3;
-        ballVX.current = Math.cos(angle) * speed;
-        ballVY.current = Math.sin(angle) * speed;
-    }, []);
-
+    // Start game
     const startGame = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const w = canvas.width;
-        const h = canvas.height;
 
-        paddleX.current = w / 2;
-        paddleW.current = isMobile ? 80 : 100;
+        // Compute grid
+        const cellSize = isMobile ? 14 : CELL_SIZE;
+        gridW.current = Math.floor(canvas.width / cellSize);
+        gridH.current = Math.floor(canvas.height / cellSize);
+
+        // Center snake
+        const cx = Math.floor(gridW.current / 2);
+        const cy = Math.floor(gridH.current / 2);
+        snakeRef.current = [
+            { x: cx, y: cy },
+            { x: cx - 1, y: cy },
+            { x: cx - 2, y: cy },
+        ];
+
+        dirRef.current = "RIGHT";
+        nextDirRef.current = "RIGHT";
         scoreRef.current = 0;
-        levelRef.current = 1;
-        livesRef.current = 3;
-        comboRef.current = 0;
-        particles.current = [];
+        eatParticles.current = [];
         setScore(0);
-        setLevel(1);
-        setLives(3);
 
-        bricks.current = buildLevel(w, h, 1);
-        resetBall(w, h);
+        placeFood();
+        lastTick.current = performance.now();
         setGameState("playing");
-    }, [buildLevel, resetBall, isMobile]);
+    }, [isMobile, placeFood]);
 
-    const nextLevel = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        levelRef.current++;
-        setLevel(levelRef.current);
-        paddleW.current = Math.max(60, paddleW.current - 5);
-        bricks.current = buildLevel(canvas.width, canvas.height, levelRef.current);
-        resetBall(canvas.width, canvas.height);
-    }, [buildLevel, resetBall]);
-
-    // Input
+    // ─── Input Handlers ───────────────────────────────────────────
     useEffect(() => {
+        const setDir = (d: Dir) => {
+            if (OPPOSITE[d] !== dirRef.current) {
+                nextDirRef.current = d;
+            }
+        };
+
         const handleKey = (e: KeyboardEvent) => {
             if (e.code === "Space") {
                 e.preventDefault();
                 if (gsRef.current !== "playing") startGame();
+                return;
+            }
+            const map: Record<string, Dir> = {
+                ArrowUp: "UP", ArrowDown: "DOWN", ArrowLeft: "LEFT", ArrowRight: "RIGHT",
+                KeyW: "UP", KeyS: "DOWN", KeyA: "LEFT", KeyD: "RIGHT",
+            };
+            if (map[e.code]) {
+                e.preventDefault();
+                setDir(map[e.code]);
             }
         };
-        const handleMouse = (e: MouseEvent) => {
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            const rect = canvas.getBoundingClientRect();
-            mouseX.current = e.clientX - rect.left;
-        };
-        const handleTouch = (e: TouchEvent) => {
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            const rect = canvas.getBoundingClientRect();
+
+        const handleTouchStart = (e: TouchEvent) => {
             if (e.touches.length > 0) {
-                mouseX.current = e.touches[0].clientX - rect.left;
+                touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             }
+        };
+
+        const handleTouchEnd = (e: TouchEvent) => {
+            if (!touchStart.current || e.changedTouches.length === 0) return;
+            const dx = e.changedTouches[0].clientX - touchStart.current.x;
+            const dy = e.changedTouches[0].clientY - touchStart.current.y;
+            const absDx = Math.abs(dx);
+            const absDy = Math.abs(dy);
+
+            // Minimum swipe distance
+            if (Math.max(absDx, absDy) < 20) {
+                // Tap — start game if not playing
+                if (gsRef.current !== "playing") startGame();
+                return;
+            }
+
+            if (absDx > absDy) {
+                setDir(dx > 0 ? "RIGHT" : "LEFT");
+            } else {
+                setDir(dy > 0 ? "DOWN" : "UP");
+            }
+            touchStart.current = null;
         };
 
         window.addEventListener("keydown", handleKey);
-        window.addEventListener("mousemove", handleMouse);
-        window.addEventListener("touchmove", handleTouch, { passive: true });
-        window.addEventListener("touchstart", handleTouch, { passive: true });
+        window.addEventListener("touchstart", handleTouchStart, { passive: true });
+        window.addEventListener("touchend", handleTouchEnd, { passive: true });
         return () => {
             window.removeEventListener("keydown", handleKey);
-            window.removeEventListener("mousemove", handleMouse);
-            window.removeEventListener("touchmove", handleTouch);
-            window.removeEventListener("touchstart", handleTouch);
+            window.removeEventListener("touchstart", handleTouchStart);
+            window.removeEventListener("touchend", handleTouchEnd);
         };
     }, [startGame]);
 
-    // Game loop
+    // ─── Game Loop ────────────────────────────────────────────────
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -220,336 +189,195 @@ export default function MiniGame() {
             const rect = el.getBoundingClientRect();
             canvas.width = rect.width;
             canvas.height = rect.height;
-            initStars(canvas.width, canvas.height);
-            mouseX.current = canvas.width / 2;
         };
         resize();
         window.addEventListener("resize", resize);
 
-        let t = 0;
+        let idleT = 0;
 
-        const loop = () => {
+        const loop = (now: number) => {
             const w = canvas.width;
             const h = canvas.height;
             const state = gsRef.current;
-            t++;
+            const cellSize = w < 768 ? 14 : CELL_SIZE;
 
-            // Shake
-            if (shakeRef.current > 0) {
-                ctx.save();
-                ctx.translate(
-                    (Math.random() - 0.5) * shakeRef.current * 2,
-                    (Math.random() - 0.5) * shakeRef.current * 2,
-                );
-                shakeRef.current *= 0.85;
-                if (shakeRef.current < 0.2) shakeRef.current = 0;
-            }
+            // Recompute grid size each frame (handles resize)
+            gridW.current = Math.floor(w / cellSize);
+            gridH.current = Math.floor(h / cellSize);
 
-            // Clear
-            ctx.fillStyle = "#0a0a0a";
-            ctx.fillRect(0, 0, w, h);
+            // Grid offset to center
+            const offsetX = Math.floor((w - gridW.current * cellSize) / 2);
+            const offsetY = Math.floor((h - gridH.current * cellSize) / 2);
 
-            // Stars
-            starsArr.current.forEach(s => {
-                const a = s.alpha * (0.5 + 0.5 * Math.sin(t * s.twinkle + s.phase));
-                ctx.fillStyle = `rgba(255,255,255,${a})`;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Combo timer
-            if (comboTimer.current > 0) comboTimer.current--;
-            if (comboTimer.current === 0) comboRef.current = 0;
-
-            const groundY = h - 30;
-
+            // ─── Tick (move snake) ─────────────────
             if (state === "playing") {
-                // ─── Move Paddle ─────────────────────
-                const targetPX = Math.max(paddleW.current / 2, Math.min(w - paddleW.current / 2, mouseX.current));
-                paddleX.current += (targetPX - paddleX.current) * 0.25;
+                const tickSpeed = Math.max(TICK_MIN, TICK_BASE - snakeRef.current.length * 1.5);
+                if (now - lastTick.current >= tickSpeed) {
+                    lastTick.current = now;
+                    dirRef.current = nextDirRef.current;
+                    const head = snakeRef.current[0];
+                    const d = DIR_MAP[dirRef.current];
+                    const newHead: Point = { x: head.x + d.x, y: head.y + d.y };
 
-                // ─── Move Ball ───────────────────────
-                ballX.current += ballVX.current;
-                ballY.current += ballVY.current;
-
-                // Wall bounce
-                if (ballX.current - BALL_RADIUS <= 0) {
-                    ballX.current = BALL_RADIUS;
-                    ballVX.current = Math.abs(ballVX.current);
-                }
-                if (ballX.current + BALL_RADIUS >= w) {
-                    ballX.current = w - BALL_RADIUS;
-                    ballVX.current = -Math.abs(ballVX.current);
-                }
-                if (ballY.current - BALL_RADIUS <= 0) {
-                    ballY.current = BALL_RADIUS;
-                    ballVY.current = Math.abs(ballVY.current);
-                }
-
-                // Ball falls below paddle
-                if (ballY.current > groundY + 20) {
-                    livesRef.current--;
-                    setLives(livesRef.current);
-                    shakeRef.current = 6;
-
-                    if (livesRef.current <= 0) {
-                        // Game over
+                    // Check wall collision
+                    if (newHead.x < 0 || newHead.x >= gridW.current ||
+                        newHead.y < 0 || newHead.y >= gridH.current) {
+                        // Die
                         setGameState("dead");
-                        shakeRef.current = 10;
-                        // Explode remaining bricks
-                        bricks.current.filter(b => b.alive).slice(0, 10).forEach(b => {
-                            spawnBrickParticles(b.x, b.y, b.w, b.h, 0.4);
-                        });
                         if (scoreRef.current > highRef.current) {
                             highRef.current = scoreRef.current;
                             setHighScore(scoreRef.current);
-                            localStorage.setItem("oryxen-breakout-high", scoreRef.current.toString());
+                            localStorage.setItem("oryxen-snake-high", scoreRef.current.toString());
+                        }
+                    }
+                    // Check self collision
+                    else if (snakeRef.current.some(p => p.x === newHead.x && p.y === newHead.y)) {
+                        setGameState("dead");
+                        if (scoreRef.current > highRef.current) {
+                            highRef.current = scoreRef.current;
+                            setHighScore(scoreRef.current);
+                            localStorage.setItem("oryxen-snake-high", scoreRef.current.toString());
                         }
                     } else {
-                        resetBall(w, h);
-                    }
-                }
+                        snakeRef.current.unshift(newHead);
 
-                // Paddle collision
-                const pLeft = paddleX.current - paddleW.current / 2;
-                const pRight = paddleX.current + paddleW.current / 2;
-                const pTop = groundY - PADDLE_HEIGHT / 2;
-
-                if (
-                    ballY.current + BALL_RADIUS >= pTop &&
-                    ballY.current - BALL_RADIUS <= pTop + PADDLE_HEIGHT &&
-                    ballX.current >= pLeft &&
-                    ballX.current <= pRight &&
-                    ballVY.current > 0
-                ) {
-                    // Reflect with angle depending on where ball hit paddle
-                    const hitPos = (ballX.current - paddleX.current) / (paddleW.current / 2); // -1 to 1
-                    const angle = hitPos * (Math.PI / 3) - Math.PI / 2;
-                    const speed = Math.sqrt(ballVX.current ** 2 + ballVY.current ** 2);
-                    const newSpeed = Math.min(speed * 1.005, 9); // Slight acceleration, capped
-                    ballVX.current = Math.cos(angle) * newSpeed;
-                    ballVY.current = Math.sin(angle) * newSpeed;
-                    ballY.current = pTop - BALL_RADIUS;
-
-                    // Paddle hit particle
-                    for (let i = 0; i < 5; i++) {
-                        particles.current.push({
-                            x: ballX.current,
-                            y: pTop,
-                            vx: (Math.random() - 0.5) * 3,
-                            vy: -(Math.random() * 2 + 1),
-                            life: 0.6,
-                            size: Math.random() * 2 + 0.5,
-                            brightness: 0.6,
-                        });
-                    }
-                }
-
-                // Brick collision
-                let hitBrick = false;
-                bricks.current.forEach(brick => {
-                    if (!brick.alive) return;
-
-                    const bLeft = brick.x;
-                    const bRight = brick.x + brick.w;
-                    const bTop = brick.y;
-                    const bBottom = brick.y + brick.h;
-
-                    if (
-                        ballX.current + BALL_RADIUS > bLeft &&
-                        ballX.current - BALL_RADIUS < bRight &&
-                        ballY.current + BALL_RADIUS > bTop &&
-                        ballY.current - BALL_RADIUS < bBottom
-                    ) {
-                        brick.hits--;
-
-                        if (brick.hits <= 0) {
-                            brick.alive = false;
-                            hitBrick = true;
-
-                            // Score with combo
-                            comboRef.current++;
-                            comboTimer.current = 90; // 1.5 sec
-                            const points = 10 * comboRef.current * levelRef.current;
-                            scoreRef.current += points;
+                        // Check food
+                        if (newHead.x === foodRef.current.x && newHead.y === foodRef.current.y) {
+                            scoreRef.current += 10;
                             setScore(scoreRef.current);
 
-                            spawnBrickParticles(brick.x, brick.y, brick.w, brick.h,
-                                Math.min(1, 0.4 + comboRef.current * 0.1));
-                        }
+                            // Small eat particles
+                            const fx = offsetX + foodRef.current.x * cellSize + cellSize / 2;
+                            const fy = offsetY + foodRef.current.y * cellSize + cellSize / 2;
+                            for (let i = 0; i < 8; i++) {
+                                const angle = (Math.PI * 2 * i) / 8;
+                                eatParticles.current.push({
+                                    x: fx, y: fy,
+                                    vx: Math.cos(angle) * (1.5 + Math.random()),
+                                    vy: Math.sin(angle) * (1.5 + Math.random()),
+                                    life: 1,
+                                });
+                            }
 
-                        // Determine bounce direction
-                        const overlapLeft = (ballX.current + BALL_RADIUS) - bLeft;
-                        const overlapRight = bRight - (ballX.current - BALL_RADIUS);
-                        const overlapTop = (ballY.current + BALL_RADIUS) - bTop;
-                        const overlapBottom = bBottom - (ballY.current - BALL_RADIUS);
-
-                        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
-
-                        if (minOverlap === overlapTop || minOverlap === overlapBottom) {
-                            ballVY.current = -ballVY.current;
+                            placeFood();
+                            // Don't pop tail (snake grows)
                         } else {
-                            ballVX.current = -ballVX.current;
+                            snakeRef.current.pop();
                         }
                     }
-                });
-
-                if (hitBrick) shakeRef.current = Math.min(3, shakeRef.current + 1.5);
-
-                // Check win
-                if (bricks.current.every(b => !b.alive)) {
-                    nextLevel();
                 }
             }
 
-            // ─── Draw Bricks ─────────────────────────
-            bricks.current.forEach(brick => {
-                if (!brick.alive) return;
+            // ─── Clear ────────────────────────────────
+            ctx.fillStyle = "#0a0a0a";
+            ctx.fillRect(0, 0, w, h);
 
-                const brightness = brick.hits / brick.maxHits;
-                const alpha = 0.15 + brightness * 0.25;
+            // ─── Grid lines (subtle) ──────────────────
+            ctx.strokeStyle = "rgba(255,255,255,0.02)";
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x <= gridW.current; x++) {
+                ctx.beginPath();
+                ctx.moveTo(offsetX + x * cellSize, offsetY);
+                ctx.lineTo(offsetX + x * cellSize, offsetY + gridH.current * cellSize);
+                ctx.stroke();
+            }
+            for (let y = 0; y <= gridH.current; y++) {
+                ctx.beginPath();
+                ctx.moveTo(offsetX, offsetY + y * cellSize);
+                ctx.lineTo(offsetX + gridW.current * cellSize, offsetY + y * cellSize);
+                ctx.stroke();
+            }
 
-                // Brick body
+            // ─── Border ───────────────────────────────
+            ctx.strokeStyle = "rgba(255,255,255,0.06)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(offsetX, offsetY, gridW.current * cellSize, gridH.current * cellSize);
+
+            // ─── Food ─────────────────────────────────
+            foodPulse.current += 0.04;
+            const fp = foodRef.current;
+            const fx = offsetX + fp.x * cellSize;
+            const fy = offsetY + fp.y * cellSize;
+            const pulse = 0.5 + 0.5 * Math.sin(foodPulse.current);
+
+            if (state === "playing" || state === "idle") {
+                // Food glow
+                const glow = ctx.createRadialGradient(
+                    fx + cellSize / 2, fy + cellSize / 2, 0,
+                    fx + cellSize / 2, fy + cellSize / 2, cellSize + FOOD_GLOW_SIZE * pulse,
+                );
+                glow.addColorStop(0, `rgba(255,255,255,${0.08 + 0.04 * pulse})`);
+                glow.addColorStop(1, "transparent");
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(fx + cellSize / 2, fy + cellSize / 2, cellSize + FOOD_GLOW_SIZE * pulse, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Food cell
+                const pad = 2;
+                ctx.fillStyle = `rgba(255,255,255,${0.6 + 0.2 * pulse})`;
+                ctx.beginPath();
+                ctx.roundRect(fx + pad, fy + pad, cellSize - pad * 2, cellSize - pad * 2, 3);
+                ctx.fill();
+            }
+
+            // ─── Snake ────────────────────────────────
+            const snake = state === "idle" ? getIdleSnake(gridW.current, gridH.current, idleT++) : snakeRef.current;
+
+            snake.forEach((seg, i) => {
+                const sx = offsetX + seg.x * cellSize;
+                const sy = offsetY + seg.y * cellSize;
+                const pad = 1;
+
+                // Head is brighter
+                const isHead = i === 0;
+                const alpha = isHead ? 0.85 : Math.max(0.12, 0.5 - i * 0.015);
+
                 ctx.fillStyle = `rgba(255,255,255,${alpha})`;
                 ctx.beginPath();
-                ctx.roundRect(brick.x, brick.y, brick.w, brick.h, 3);
+                ctx.roundRect(sx + pad, sy + pad, cellSize - pad * 2, cellSize - pad * 2, isHead ? 4 : 2);
                 ctx.fill();
 
-                // Border
-                ctx.strokeStyle = `rgba(255,255,255,${alpha + 0.1})`;
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(brick.x, brick.y, brick.w, brick.h, 3);
-                ctx.stroke();
-
-                // Strong brick indicator
-                if (brick.hits > 1) {
-                    ctx.fillStyle = `rgba(255,255,255,${0.3})`;
+                // Head glow
+                if (isHead && state === "playing") {
+                    const hGlow = ctx.createRadialGradient(
+                        sx + cellSize / 2, sy + cellSize / 2, 0,
+                        sx + cellSize / 2, sy + cellSize / 2, cellSize * 1.5,
+                    );
+                    hGlow.addColorStop(0, "rgba(255,255,255,0.08)");
+                    hGlow.addColorStop(1, "transparent");
+                    ctx.fillStyle = hGlow;
                     ctx.beginPath();
-                    ctx.arc(brick.x + brick.w / 2, brick.y + brick.h / 2, 2, 0, Math.PI * 2);
+                    ctx.arc(sx + cellSize / 2, sy + cellSize / 2, cellSize * 1.5, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
 
-            // ─── Draw Paddle ─────────────────────────
-            const paddleY = groundY - PADDLE_HEIGHT / 2;
-            const pw = state === "idle" ? 100 : paddleW.current;
-            const px = state === "idle" ? w / 2 : paddleX.current;
-
-            // Paddle glow
-            const pGlow = ctx.createRadialGradient(px, paddleY, 0, px, paddleY, pw);
-            pGlow.addColorStop(0, "rgba(255,255,255,0.06)");
-            pGlow.addColorStop(1, "transparent");
-            ctx.fillStyle = pGlow;
-            ctx.fillRect(px - pw, paddleY - 20, pw * 2, 40);
-
-            // Paddle body
-            const pGrad = ctx.createLinearGradient(px - pw / 2, paddleY, px + pw / 2, paddleY);
-            pGrad.addColorStop(0, "rgba(255,255,255,0.1)");
-            pGrad.addColorStop(0.5, "rgba(255,255,255,0.5)");
-            pGrad.addColorStop(1, "rgba(255,255,255,0.1)");
-            ctx.fillStyle = pGrad;
-            ctx.beginPath();
-            ctx.roundRect(px - pw / 2, paddleY, pw, PADDLE_HEIGHT, 6);
-            ctx.fill();
-
-            ctx.strokeStyle = "rgba(255,255,255,0.3)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(px - pw / 2, paddleY, pw, PADDLE_HEIGHT, 6);
-            ctx.stroke();
-
-            // ─── Draw Ball ───────────────────────────
-            const bx = state === "idle" ? w / 2 + Math.sin(t * 0.02) * 30 : ballX.current;
-            const by = state === "idle" ? groundY - 60 + Math.cos(t * 0.03) * 15 : ballY.current;
-
-            // Ball glow
-            const bGlow = ctx.createRadialGradient(bx, by, 0, bx, by, 25);
-            bGlow.addColorStop(0, "rgba(255,255,255,0.2)");
-            bGlow.addColorStop(1, "transparent");
-            ctx.fillStyle = bGlow;
-            ctx.beginPath();
-            ctx.arc(bx, by, 25, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Ball
-            ctx.fillStyle = "rgba(255,255,255,0.9)";
-            ctx.beginPath();
-            ctx.arc(bx, by, BALL_RADIUS, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = "rgba(255,255,255,0.4)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(bx, by, BALL_RADIUS + 2, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // ─── Particles ──────────────────────────
-            particles.current.forEach(p => {
+            // ─── Particles ────────────────────────────
+            eatParticles.current.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.04;
-                p.vx *= 0.99;
-                p.life -= 0.02;
-                ctx.fillStyle = `rgba(255,255,255,${p.life * p.brightness})`;
+                p.life -= 0.04;
+                ctx.fillStyle = `rgba(255,255,255,${p.life * 0.6})`;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, 1.5 * p.life, 0, Math.PI * 2);
                 ctx.fill();
             });
-            particles.current = particles.current.filter(p => p.life > 0);
+            eatParticles.current = eatParticles.current.filter(p => p.life > 0);
 
-            // ─── Ground line ────────────────────────
-            ctx.strokeStyle = "rgba(255,255,255,0.05)";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(0, groundY + PADDLE_HEIGHT);
-            ctx.lineTo(w, groundY + PADDLE_HEIGHT);
-            ctx.stroke();
-
-            // ─── Combo display ──────────────────────
-            if (state === "playing" && comboRef.current > 1) {
-                ctx.font = `bold ${14 + comboRef.current}px 'Inter', system-ui, sans-serif`;
-                ctx.fillStyle = `rgba(255,255,255,${Math.min(0.5, 0.15 + comboRef.current * 0.05)})`;
-                ctx.textAlign = "center";
-                ctx.fillText(`${comboRef.current}x COMBO`, w / 2, h / 2);
-            }
-
-            // ─── UI ─────────────────────────────────
-            if (state === "playing") {
-                // Lives
-                for (let i = 0; i < livesRef.current; i++) {
-                    ctx.fillStyle = "rgba(255,255,255,0.3)";
-                    ctx.beginPath();
-                    ctx.arc(20 + i * 18, h - 14, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-
+            // ─── UI Overlays ──────────────────────────
             if (state === "idle") {
-                // Idle bricks preview
-                const previewBricks = buildLevel(w, h, 1);
-                previewBricks.forEach(brick => {
-                    ctx.fillStyle = `rgba(255,255,255,0.08)`;
-                    ctx.beginPath();
-                    ctx.roundRect(brick.x, brick.y, brick.w, brick.h, 3);
-                    ctx.fill();
-                    ctx.strokeStyle = "rgba(255,255,255,0.06)";
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                });
-
                 ctx.font = "600 22px 'Inter', system-ui, sans-serif";
                 ctx.fillStyle = "rgba(255,255,255,0.7)";
                 ctx.textAlign = "center";
-                ctx.fillText("NEON   BREAKOUT", w / 2, h / 2 - 10);
+                ctx.fillText("NEON   SNAKE", w / 2, h / 2 - 10);
 
                 ctx.font = "300 12px 'Inter', system-ui, sans-serif";
                 ctx.fillStyle = "rgba(255,255,255,0.25)";
-                const isTouchDevice = 'ontouchstart' in window;
+                const isTouchDevice = "ontouchstart" in window;
                 ctx.fillText(
-                    isTouchDevice ? "Tap to start  ·  Slide to move paddle" : "Press Space to start  ·  Mouse to move paddle",
-                    w / 2, h / 2 + 15
+                    isTouchDevice ? "Tap to start  ·  Swipe to steer" : "Press Space to start  ·  Arrow keys to steer",
+                    w / 2, h / 2 + 15,
                 );
 
                 if (highRef.current > 0) {
@@ -560,7 +388,7 @@ export default function MiniGame() {
             }
 
             if (state === "dead") {
-                ctx.fillStyle = "rgba(0,0,0,0.35)";
+                ctx.fillStyle = "rgba(0,0,0,0.4)";
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.font = "600 20px 'Inter', system-ui, sans-serif";
@@ -574,7 +402,7 @@ export default function MiniGame() {
 
                 ctx.font = "400 11px 'Inter', system-ui, sans-serif";
                 ctx.fillStyle = "rgba(255,255,255,0.2)";
-                ctx.fillText(`Level ${levelRef.current}`, w / 2, h / 2 + 32);
+                ctx.fillText(`Length: ${snakeRef.current.length}`, w / 2, h / 2 + 32);
 
                 if (scoreRef.current >= highRef.current && scoreRef.current > 0) {
                     ctx.fillStyle = "rgba(255,200,50,0.5)";
@@ -583,11 +411,10 @@ export default function MiniGame() {
 
                 ctx.font = "300 12px 'Inter', system-ui, sans-serif";
                 ctx.fillStyle = "rgba(255,255,255,0.2)";
-                const isTouchDevice = 'ontouchstart' in window;
+                const isTouchDevice = "ontouchstart" in window;
                 ctx.fillText(isTouchDevice ? "Tap to retry" : "Space to retry", w / 2, h / 2 + 75);
             }
 
-            if (shakeRef.current > 0) ctx.restore();
             animId.current = requestAnimationFrame(loop);
         };
 
@@ -596,7 +423,7 @@ export default function MiniGame() {
             cancelAnimationFrame(animId.current);
             window.removeEventListener("resize", resize);
         };
-    }, [initStars, spawnBrickParticles, buildLevel, nextLevel, resetBall]);
+    }, [placeFood]);
 
     const handleClick = useCallback(() => {
         if (gsRef.current !== "playing") startGame();
@@ -617,10 +444,10 @@ export default function MiniGame() {
                         Take a Break
                     </h2>
                     <h3 className="text-2xl md:text-3xl text-white font-medium tracking-tight mb-2">
-                        Neon Breakout
+                        Neon Snake
                     </h3>
                     <p className="text-zinc-500 text-sm max-w-md">
-                        Smash the grid. Chain combos. How far can you go?
+                        Eat. Grow. Survive. How long can you last?
                     </p>
                 </motion.div>
             </div>
@@ -642,12 +469,14 @@ export default function MiniGame() {
                         onTouchStart={handleClick}
                     />
 
-                    {/* Score + Level overlay */}
+                    {/* Score overlay */}
                     {gameState === "playing" && (
                         <div className="absolute top-4 right-4 flex items-center gap-5 pointer-events-none">
                             <div className="text-right">
-                                <div className="text-[9px] text-zinc-600 tracking-widest">LVL</div>
-                                <div className="text-sm font-light text-white/40 tabular-nums">{level}</div>
+                                <div className="text-[9px] text-zinc-600 tracking-widest">LENGTH</div>
+                                <div className="text-sm font-light text-white/40 tabular-nums">
+                                    {snakeRef.current.length}
+                                </div>
                             </div>
                             <div className="text-right">
                                 <div className="text-[9px] text-zinc-600 tracking-widest">SCORE</div>
@@ -656,18 +485,14 @@ export default function MiniGame() {
                         </div>
                     )}
 
-                    {/* Lives */}
-                    {gameState === "playing" && (
-                        <div className="absolute top-4 left-4 flex items-center gap-1.5 pointer-events-none">
-                            {Array.from({ length: lives }).map((_, i) => (
-                                <div key={i} className="w-2 h-2 rounded-full bg-white/30" />
-                            ))}
-                        </div>
-                    )}
-
                     {/* High score badge */}
                     {highScore > 0 && gameState !== "playing" && (
-                        <motion.div className="absolute top-4 right-4 pointer-events-none" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+                        <motion.div
+                            className="absolute top-4 right-4 pointer-events-none"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                        >
                             <div className="text-right">
                                 <div className="text-[9px] text-zinc-600 tracking-widest">BEST</div>
                                 <div className="text-sm font-light text-white/30">{highScore}</div>
@@ -678,4 +503,28 @@ export default function MiniGame() {
             </motion.div>
         </section>
     );
+}
+
+// ─── Idle demo snake (deterministic looping path) ──────────────
+function getIdleSnake(gw: number, gh: number, t: number): Point[] {
+    // Create a simple looping path in the center
+    const cx = Math.floor(gw / 2);
+    const cy = Math.floor(gh / 2);
+    const radius = 4;
+    const path: Point[] = [];
+
+    // Build a rectangle path
+    for (let x = cx - radius; x <= cx + radius; x++) path.push({ x, y: cy - radius });
+    for (let y = cy - radius + 1; y <= cy + radius; y++) path.push({ x: cx + radius, y });
+    for (let x = cx + radius - 1; x >= cx - radius; x--) path.push({ x, y: cy + radius });
+    for (let y = cy + radius - 1; y > cy - radius; y--) path.push({ x: cx - radius, y });
+
+    const len = 8;
+    const offset = Math.floor(t / 6) % path.length;
+    const snake: Point[] = [];
+    for (let i = 0; i < len; i++) {
+        const idx = (offset - i + path.length * 10) % path.length;
+        snake.push(path[idx]);
+    }
+    return snake;
 }

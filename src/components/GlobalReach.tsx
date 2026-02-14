@@ -99,6 +99,14 @@ const DESTS = [
     { lon: 13.4, lat: 52.5, name: "Berlin" },
     { lon: 139.7, lat: 35.7, name: "Tokyo" },
     { lon: -99.1, lat: 19.4, name: "Mexico City" },
+    { lon: -122.4, lat: 37.8, name: "San Francisco" },
+    { lon: -43.2, lat: -22.9, name: "Rio de Janeiro" },
+    { lon: 2.3, lat: 48.9, name: "Paris" },
+    { lon: 28.9, lat: 41, name: "Istanbul" },
+    { lon: -79.4, lat: 43.7, name: "Toronto" },
+    { lon: 126.9, lat: 37.6, name: "Seoul" },
+    { lon: 36.8, lat: -1.3, name: "Nairobi" },
+    { lon: 174.8, lat: -36.8, name: "Auckland" },
 ];
 
 function curvedPath(ox: number, oy: number, dx: number, dy: number): string {
@@ -139,7 +147,7 @@ export default function GlobalReach() {
                         Delivering Worldwide
                     </h2>
                     <p className="text-zinc-500 text-lg max-w-2xl mx-auto">
-                        From Kolkata to the world. We ship digital products across continents, time zones, and markets.
+                        We ship digital products across continents, time zones, and markets — building for a borderless future.
                     </p>
                 </motion.div>
 

@@ -6,22 +6,6 @@ import { motion } from "framer-motion";
 import CodeEditor from "./ui/CodeEditor";
 
 export default function Hero() {
-  // Staggered word animation - syncs with code editor timing
-  const headlineWords = [
-    { text: "We", delay: 0 },
-    { text: "build", delay: 0.1 },
-  ];
-
-  const headlineWords2 = [
-    { text: "digital", delay: 0.2 },
-    { text: "systems", delay: 0.3, muted: true },
-  ];
-
-  const headlineWords3 = [
-    { text: "for", delay: 0.4 },
-    { text: "what's", delay: 0.5 },
-    { text: "next.", delay: 0.6 },
-  ];
 
   return (
     <section className="relative min-h-screen flex items-center bg-black pt-24 pb-32 overflow-hidden border-b border-zinc-900">
@@ -50,82 +34,24 @@ export default function Hero() {
             <div className="flex flex-col justify-center">
 
               {/* Animated Headline */}
-              <h1 className="text-5xl sm:text-7xl font-bold tracking-tighter text-white mb-8 leading-[0.95]">
-                {/* Line 1: We build digital */}
-                <span className="block">
-                  {headlineWords.map((word, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                      transition={{
-                        duration: 0.5,
-                        delay: word.delay,
-                        ease: [0.25, 0.1, 0.25, 1]
-                      }}
-                      className="inline-block mr-4"
-                    >
-                      {word.text}
-                    </motion.span>
-                  ))}
-                </span>
-
-                {/* Line 2: systems for */}
-                <span className="block">
-                  {headlineWords2.map((word, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                      transition={{
-                        duration: 0.5,
-                        delay: word.delay,
-                        ease: [0.25, 0.1, 0.25, 1]
-                      }}
-                      className={`inline-block mr-4 ${word.muted ? "text-zinc-500" : ""}`}
-                    >
-                      {word.text}
-                    </motion.span>
-                  ))}
-                </span>
-
-                {/* Line 3: what's next. */}
-                <span className="block">
-                  {headlineWords3.map((word, i) => (
-                    <motion.span
-                      key={i}
-                      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
-                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                      transition={{
-                        duration: 0.5,
-                        delay: word.delay,
-                        ease: [0.25, 0.1, 0.25, 1]
-                      }}
-                      className="inline-block mr-4"
-                    >
-                      {word.text}
-                    </motion.span>
-                  ))}
-                </span>
-              </h1>
+              {/* Animated Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-5xl sm:text-7xl tracking-tight text-white mb-8 leading-[1.1] font-[family-name:var(--font-playfair)] font-semibold"
+              >
+                Where strategy meets craft
+              </motion.h1>
 
               {/* Animated paragraph - fades in after headline */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-                className="text-lg sm:text-xl text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-12 font-light"
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-lg sm:text-xl text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-12 font-[family-name:var(--font-sora)] font-normal"
               >
-                ORYXEN designs and develops websites, applications, platforms, and{" "}
-                <motion.span
-                  initial={{ color: "rgb(161, 161, 170)" }}
-                  animate={{ color: ["rgb(161, 161, 170)", "rgb(34, 211, 238)", "rgb(161, 161, 170)"] }}
-                  transition={{ duration: 3, delay: 1.5, repeat: Infinity, repeatDelay: 5 }}
-                  className="inline"
-                >
-                  intelligent software
-                </motion.span>{" "}
-                for founders and companies worldwide.
+                We design, architect, and build bespoke digital solutions. Websites, applications, enterprise platforms, and AI-driven software tailored to your competitive edge.
               </motion.p>
 
               {/* Animated buttons - slide in after paragraph */}

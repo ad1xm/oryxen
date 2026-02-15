@@ -41,6 +41,14 @@ const RICH_PROJECT_DETAILS: Record<string, any> = {
             stack: ["Python", "TensorFlow", "PostGIS", "Redis"]
         }
     },
+    "E-Commerce Storefront": {
+        details: {
+            headline: "Modern Digital Commerce",
+            capabilities: ["Headless commerce architecture", "One click checkout", "Inventory synchronization", "Customer behavior analytics"],
+            benefits: ["Increase conversion rates", "Seamless omnichannel experience", "Scale to millions of users"],
+            stack: ["Next.js", "Stripe", "Prisma", "Vercel"]
+        }
+    },
     "E Commerce Storefront": {
         details: {
             headline: "Modern Digital Commerce",

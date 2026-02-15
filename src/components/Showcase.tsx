@@ -4,13 +4,20 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
 // Detailed showcase projects with hardcoded descriptions
-const showcaseProjects = [
+import { getVisibleShowcaseProjects, type ShowcaseProject } from "@/lib/supabase";
+
+// Detailed showcase projects (fallback if DB is empty)
+const fallbackProjects = [
     {
         category: "Web Application",
         title: "Fintech Dashboard",
         description: "Real time trading analytics with sub millisecond data visualization. Custom branded for your firm.",
         type: "fintech",
         color: "from-zinc-800/50 to-zinc-900/50",
+        order: 1,
+        is_visible: true,
+        created_at: new Date().toISOString(),
+        id: "fallback-1",
         details: {
             headline: "Institutional Grade Trading Platform",
             capabilities: ["Real time WebSocket data streaming", "Advanced chart visualization", "Instant order execution", "Portfolio risk management"],
@@ -18,133 +25,50 @@ const showcaseProjects = [
             stack: ["Next.js", "TypeScript", "Go", "PostgreSQL"]
         }
     },
-    {
-        category: "Mobile App",
-        title: "Health Monitor",
-        description: "Biometric tracking application integrated with wearable sensors. White labeled to your brand.",
-        type: "health",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Connected Health Ecosystem",
-            capabilities: ["Bluetooth device integration", "Live vital sign monitoring", "Secure health data storage", "Doctor patient communication"],
-            benefits: ["Remote patient monitoring", "Early warning detection", "HIPAA compliant architecture"],
-            stack: ["React Native", "Swift", "Node.js", "MongoDB"]
-        }
-    },
-    {
-        category: "Platform",
-        title: "Cloud Automation",
-        description: "Autonomous infrastructure scaling for high traffic enterprise systems. Fully managed.",
-        type: "cloud",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Intelligent Infrastructure Management",
-            capabilities: ["Auto scaling container orchestration", "Multi region failover", "Infrastructure as Code", "Cost optimization analytics"],
-            benefits: ["Zero downtime deployments", "Reduced infrastructure costs", "Global low latency availability"],
-            stack: ["Kubernetes", "Terraform", "AWS", "Rust"]
-        }
-    },
-    {
-        category: "Internal Tool",
-        title: "Logistics Engine",
-        description: "Predictive inventory management system with AI forecasting. Built for your workflows.",
-        type: "logistics",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Supply Chain Intelligence",
-            capabilities: ["Route optimization algorithms", "Real time fleet tracking", "Demand forecasting AI", "Warehouse automation integration"],
-            benefits: ["Reduce delivery times", "Optimize inventory levels", "Lower operational costs"],
-            stack: ["Python", "TensorFlow", "PostGIS", "Redis"]
-        }
-    },
-    {
-        category: "SaaS Platform",
-        title: "E Commerce Storefront",
-        description: "High conversion storefront with payment integration, inventory sync & analytics. Launch under your brand.",
-        type: "ecommerce",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Modern Digital Commerce",
-            capabilities: ["Headless commerce architecture", "One click checkout", "Inventory synchronization", "Customer behavior analytics"],
-            benefits: ["Increase conversion rates", "Seamless omnichannel experience", "Scale to millions of users"],
-            stack: ["Next.js", "Stripe", "Prisma", "Vercel"]
-        }
-    },
-    {
-        category: "AI Application",
-        title: "AI Chatbot & Support",
-        description: "GPT powered customer support bot with knowledge base training. Embedded in your product.",
-        type: "chatbot",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Intelligent Customer Service",
-            capabilities: ["Natural Language Processing", "Context aware responses", "Ticket escalation routing", "Multilingual support"],
-            benefits: ["24/7 customer support", "Reduce support team load", "Consistent brand voice"],
-            stack: ["OpenAI API", "Python", "Vector DB", "FastAPI"]
-        }
-    },
-    {
-        category: "Business Tool",
-        title: "CRM & Sales Pipeline",
-        description: "End to end lead tracking, deal management & reporting dashboard. Tailored to your sales process.",
-        type: "crm",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Revenue Operations Platform",
-            capabilities: ["Pipeline visualization", "Automated email sequences", "Activity tracking", "Performance forecasting"],
-            benefits: ["Close deals faster", "Improve sales team efficiency", "Data driven decision making"],
-            stack: ["React", "GraphQL", "Node.js", "PostgreSQL"]
-        }
-    },
-    {
-        category: "Content Platform",
-        title: "LMS & Course Portal",
-        description: "Video hosting, progress tracking, certificates & payments. Launch your own academy.",
-        type: "lms",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Educational Experience Platform",
-            capabilities: ["Video streaming & transcoding", "Interactive quizzes", "Progress certification", "Subscription management"],
-            benefits: ["Monetize your expertise", "Engage students effectively", "Scale your educational content"],
-            stack: ["Next.js", "Mux", "Supabase", "Stripe"]
-        }
-    },
-    {
-        category: "Booking System",
-        title: "Appointment Scheduler",
-        description: "Multi provider calendar with payments, reminders & waitlists. Perfect for clinics, salons & studios.",
-        type: "scheduler",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "Advanced Scheduling Solution",
-            capabilities: ["Real time availability sync", "Automated SMS reminders", "Staff management", "Recurring bookings"],
-            benefits: ["Eliminate double bookings", "Reduce no shows", "Streamline business operations"],
-            stack: ["React", "Firebase", "Twilio", "Google Calendar API"]
-        }
-    },
-    {
-        category: "Real Time App",
-        title: "Food Delivery Platform",
-        description: "Order tracking, driver dispatch, restaurant dashboard & customer app. Full white label stack.",
-        type: "delivery",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        details: {
-            headline: "On Demand Delivery Network",
-            capabilities: ["Geospatial routing engine", "Real time status updates", "Driver dispatcher app", "Merchant tablet interface"],
-            benefits: ["Optimize delivery routes", "Maximize order throughput", "Complete platform ownership"],
-            stack: ["Flutter", "Go", "Redis", "PostGIS"]
-        }
-    }
+    // ... (other fallback items could be added here if critical, but user wants to hide items so empty is better)
 ];
 
 export default function Showcase() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
     const [mounted, setMounted] = useState(false);
-    const [selectedProject, setSelectedProject] = useState<typeof showcaseProjects[0] | null>(null);
+    const [projects, setProjects] = useState<ShowcaseProject[]>([]);
+    const [selectedProject, setSelectedProject] = useState<ShowcaseProject | null>(null);
 
     useEffect(() => {
         setMounted(true);
+
+        async function loadProjects() {
+            try {
+                const data = await getVisibleShowcaseProjects();
+                if (data && data.length > 0) {
+                    // Ensure details and color exist, or provide defaults
+                    const processedProjects = data.map(p => ({
+                        ...p,
+                        color: p.color || "from-zinc-800/50 to-zinc-900/50",
+                        details: p.details || {
+                            headline: p.title,
+                            capabilities: [],
+                            benefits: [],
+                            stack: []
+                        }
+                    }));
+                    setProjects(processedProjects);
+                } else {
+                    // Start with empty/loading state basically, 
+                    // or if specifically requested by user logic:
+                    // setProjects(fallbackProjects); 
+                    // But here the goal is sync with admin, so if admin returns empty, show empty.
+                    setProjects([]);
+                }
+            } catch (error) {
+                console.error("Failed to load showcase projects:", error);
+                // Fallback to avoid empty section on error if critical
+                setProjects([]);
+            }
+        }
+
+        loadProjects();
     }, []);
 
     return (
@@ -170,7 +94,7 @@ export default function Showcase() {
                 className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 md:px-6 lg:px-[calc((100vw-1200px)/2+48px)] pb-12 scrollbar-none"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {showcaseProjects.map((project, index) => (
+                {projects.map((project, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -275,7 +199,7 @@ export default function Showcase() {
                             <div className="p-8">
                                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2 block">{selectedProject.category}</span>
                                 <h3 className="text-3xl font-bold text-white mb-2">{selectedProject.title}</h3>
-                                <p className="text-zinc-400 text-lg mb-8 leading-relaxed max-w-xl">{selectedProject.details.headline}</p>
+                                <p className="text-zinc-400 text-lg mb-8 leading-relaxed max-w-xl">{selectedProject.details?.headline || selectedProject.description}</p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                                     <div>
@@ -284,7 +208,7 @@ export default function Showcase() {
                                             Core Capabilities
                                         </h4>
                                         <ul className="space-y-2">
-                                            {selectedProject.details.capabilities.map((item, i) => (
+                                            {selectedProject.details?.capabilities?.map((item, i) => (
                                                 <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
                                                     <span className="text-zinc-600 mt-0.5">›</span> {item}
                                                 </li>
@@ -297,7 +221,7 @@ export default function Showcase() {
                                             Business Benefits
                                         </h4>
                                         <ul className="space-y-2">
-                                            {selectedProject.details.benefits.map((item, i) => (
+                                            {selectedProject.details?.benefits?.map((item, i) => (
                                                 <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
                                                     <span className="text-zinc-600 mt-0.5">›</span> {item}
                                                 </li>
@@ -309,7 +233,7 @@ export default function Showcase() {
                                 <div className="border-t border-zinc-800/50 pt-6">
                                     <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest mb-3">Tech Stack</h4>
                                     <div className="flex flex-wrap gap-2">
-                                        {selectedProject.details.stack.map((tech, i) => (
+                                        {selectedProject.details?.stack?.map((tech, i) => (
                                             <span key={i} className="px-2.5 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-xs text-zinc-300 font-mono">
                                                 {tech}
                                             </span>

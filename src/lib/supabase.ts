@@ -47,6 +47,13 @@ export interface ShowcaseProject {
     order: number;
     is_visible: boolean;
     created_at: string;
+    color?: string;
+    details?: {
+        headline: string;
+        capabilities: string[];
+        benefits: string[];
+        stack: string[];
+    };
 }
 
 export interface Stat {

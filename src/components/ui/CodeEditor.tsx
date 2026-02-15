@@ -58,25 +58,31 @@ export default function CodeEditor() {
 
     const currentText = codeSnippets[index].text.substring(0, subIndex);
 
-    // Improved Syntax Highlighting
+    // Improved Syntax Highlighting - Vibrant Neon Palette
     const highlight = (code: string) => {
         return code.split(/(\s+|[(){}[\]=,;"])/g).map((token, i) => {
+            // Strings - Neon Green
             if (token.startsWith('"') || token.endsWith('"')) {
-                return <span key={i} className="text-emerald-400">{token}</span>;
+                return <span key={i} className="text-[#4ade80]">{token}</span>;
             }
+            // Keywords - Electric Purple
             if (['export', 'const', 'return', 'function', '=>', 'import'].includes(token)) {
-                return <span key={i} className="text-purple-400">{token}</span>;
+                return <span key={i} className="text-[#c084fc] font-medium">{token}</span>;
             }
+            // Function Calls - Bright Blue
             if (['defineSystem', 'deploy'].includes(token)) {
-                return <span key={i} className="text-blue-400 font-bold">{token}</span>;
+                return <span key={i} className="text-[#60a5fa] font-bold">{token}</span>;
             }
+            // Object Keys - Cyan
             if (['products', 'stack', 'scale', 'environment', 'region', 'status'].includes(token)) {
-                return <span key={i} className="text-cyan-300">{token}</span>; // Object keys
+                return <span key={i} className="text-[#22d3ee]">{token}</span>;
             }
+            // Special Variables - Gold/Yellow
             if (['oryxen'].includes(token)) {
-                return <span key={i} className="text-yellow-300">{token}</span>; // Variable
+                return <span key={i} className="text-[#facc15] font-bold">{token}</span>;
             }
-            return <span key={i} className="text-zinc-100">{token}</span>;
+            // Default - Off-white
+            return <span key={i} className="text-zinc-200">{token}</span>;
         });
     };
 

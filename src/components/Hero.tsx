@@ -39,7 +39,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="text-5xl sm:text-7xl tracking-tight text-white mb-8 leading-[1.1] font-[family-name:var(--font-playfair)] font-semibold"
+                className="text-6xl sm:text-7xl lg:text-9xl tracking-tight text-white mb-8 leading-[1.1] font-[family-name:var(--font-playfair)] font-semibold whitespace-nowrap"
               >
                 Where strategy meets craft
               </motion.h1>

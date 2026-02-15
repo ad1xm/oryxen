@@ -1,80 +1,139 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { getVisibleShowcaseProjects, ShowcaseProject } from "@/lib/supabase";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
-// Fallback projects in case database is empty or fails
-const fallbackProjects = [
+// Detailed showcase projects with hardcoded descriptions
+const showcaseProjects = [
     {
         category: "Web Application",
         title: "Fintech Dashboard",
-        description: "Real-time trading analytics with sub-millisecond data visualization. Custom branded for your firm.",
+        description: "Real time trading analytics with sub millisecond data visualization. Custom branded for your firm.",
+        type: "fintech",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "fintech"
+        details: {
+            headline: "Institutional Grade Trading Platform",
+            capabilities: ["Real time WebSocket data streaming", "Advanced chart visualization", "Instant order execution", "Portfolio risk management"],
+            benefits: ["Identify market trends faster", "Execute complex strategies", "Secure and compliant infrastructure"],
+            stack: ["Next.js", "TypeScript", "Go", "PostgreSQL"]
+        }
     },
     {
         category: "Mobile App",
         title: "Health Monitor",
-        description: "Biometric tracking application integrated with wearable sensors. White-labeled to your brand.",
+        description: "Biometric tracking application integrated with wearable sensors. White labeled to your brand.",
+        type: "health",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "health"
+        details: {
+            headline: "Connected Health Ecosystem",
+            capabilities: ["Bluetooth device integration", "Live vital sign monitoring", "Secure health data storage", "Doctor patient communication"],
+            benefits: ["Remote patient monitoring", "Early warning detection", "HIPAA compliant architecture"],
+            stack: ["React Native", "Swift", "Node.js", "MongoDB"]
+        }
     },
     {
         category: "Platform",
         title: "Cloud Automation",
-        description: "Autonomous infrastructure scaling for high-traffic enterprise systems. Fully managed.",
+        description: "Autonomous infrastructure scaling for high traffic enterprise systems. Fully managed.",
+        type: "cloud",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "cloud"
+        details: {
+            headline: "Intelligent Infrastructure Management",
+            capabilities: ["Auto scaling container orchestration", "Multi region failover", "Infrastructure as Code", "Cost optimization analytics"],
+            benefits: ["Zero downtime deployments", "Reduced infrastructure costs", "Global low latency availability"],
+            stack: ["Kubernetes", "Terraform", "AWS", "Rust"]
+        }
     },
     {
         category: "Internal Tool",
         title: "Logistics Engine",
         description: "Predictive inventory management system with AI forecasting. Built for your workflows.",
+        type: "logistics",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "logistics"
+        details: {
+            headline: "Supply Chain Intelligence",
+            capabilities: ["Route optimization algorithms", "Real time fleet tracking", "Demand forecasting AI", "Warehouse automation integration"],
+            benefits: ["Reduce delivery times", "Optimize inventory levels", "Lower operational costs"],
+            stack: ["Python", "TensorFlow", "PostGIS", "Redis"]
+        }
     },
     {
         category: "SaaS Platform",
-        title: "E-Commerce Storefront",
-        description: "High-conversion storefront with payment integration, inventory sync & analytics. Launch under your brand.",
+        title: "E Commerce Storefront",
+        description: "High conversion storefront with payment integration, inventory sync & analytics. Launch under your brand.",
+        type: "ecommerce",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "ecommerce"
+        details: {
+            headline: "Modern Digital Commerce",
+            capabilities: ["Headless commerce architecture", "One click checkout", "Inventory synchronization", "Customer behavior analytics"],
+            benefits: ["Increase conversion rates", "Seamless omnichannel experience", "Scale to millions of users"],
+            stack: ["Next.js", "Stripe", "Prisma", "Vercel"]
+        }
     },
     {
         category: "AI Application",
         title: "AI Chatbot & Support",
-        description: "GPT-powered customer support bot with knowledge base training. Embedded in your product.",
+        description: "GPT powered customer support bot with knowledge base training. Embedded in your product.",
+        type: "chatbot",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "chatbot"
+        details: {
+            headline: "Intelligent Customer Service",
+            capabilities: ["Natural Language Processing", "Context aware responses", "Ticket escalation routing", "Multilingual support"],
+            benefits: ["24/7 customer support", "Reduce support team load", "Consistent brand voice"],
+            stack: ["OpenAI API", "Python", "Vector DB", "FastAPI"]
+        }
     },
     {
         category: "Business Tool",
         title: "CRM & Sales Pipeline",
-        description: "End-to-end lead tracking, deal management & reporting dashboard. Tailored to your sales process.",
+        description: "End to end lead tracking, deal management & reporting dashboard. Tailored to your sales process.",
+        type: "crm",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "crm"
+        details: {
+            headline: "Revenue Operations Platform",
+            capabilities: ["Pipeline visualization", "Automated email sequences", "Activity tracking", "Performance forecasting"],
+            benefits: ["Close deals faster", "Improve sales team efficiency", "Data driven decision making"],
+            stack: ["React", "GraphQL", "Node.js", "PostgreSQL"]
+        }
     },
     {
         category: "Content Platform",
         title: "LMS & Course Portal",
         description: "Video hosting, progress tracking, certificates & payments. Launch your own academy.",
+        type: "lms",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "lms"
+        details: {
+            headline: "Educational Experience Platform",
+            capabilities: ["Video streaming & transcoding", "Interactive quizzes", "Progress certification", "Subscription management"],
+            benefits: ["Monetize your expertise", "Engage students effectively", "Scale your educational content"],
+            stack: ["Next.js", "Mux", "Supabase", "Stripe"]
+        }
     },
     {
         category: "Booking System",
         title: "Appointment Scheduler",
-        description: "Multi-provider calendar with payments, reminders & waitlists. Perfect for clinics, salons & studios.",
+        description: "Multi provider calendar with payments, reminders & waitlists. Perfect for clinics, salons & studios.",
+        type: "scheduler",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "scheduler"
+        details: {
+            headline: "Advanced Scheduling Solution",
+            capabilities: ["Real time availability sync", "Automated SMS reminders", "Staff management", "Recurring bookings"],
+            benefits: ["Eliminate double bookings", "Reduce no shows", "Streamline business operations"],
+            stack: ["React", "Firebase", "Twilio", "Google Calendar API"]
+        }
     },
     {
-        category: "Real-Time App",
+        category: "Real Time App",
         title: "Food Delivery Platform",
-        description: "Order tracking, driver dispatch, restaurant dashboard & customer app. Full white-label stack.",
+        description: "Order tracking, driver dispatch, restaurant dashboard & customer app. Full white label stack.",
+        type: "delivery",
         color: "from-zinc-800/50 to-zinc-900/50",
-        type: "delivery"
+        details: {
+            headline: "On Demand Delivery Network",
+            capabilities: ["Geospatial routing engine", "Real time status updates", "Driver dispatcher app", "Merchant tablet interface"],
+            benefits: ["Optimize delivery routes", "Maximize order throughput", "Complete platform ownership"],
+            stack: ["Flutter", "Go", "Redis", "PostGIS"]
+        }
     }
 ];
 
@@ -82,34 +141,14 @@ export default function Showcase() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
     const [mounted, setMounted] = useState(false);
-    const [projects, setProjects] = useState<Array<{ category: string; title: string; description: string; type: string; color: string }>>([]);
-    const [loading, setLoading] = useState(true);
+    const [selectedProject, setSelectedProject] = useState<typeof showcaseProjects[0] | null>(null);
 
     useEffect(() => {
         setMounted(true);
-        async function loadProjects() {
-            try {
-                const data = await getVisibleShowcaseProjects();
-                if (data && data.length > 0) {
-                    setProjects(data.map(p => ({
-                        ...p,
-                        color: "from-zinc-800/50 to-zinc-900/50"
-                    })));
-                } else {
-                    setProjects(fallbackProjects);
-                }
-            } catch (error) {
-                console.error('Failed to load showcase projects:', error);
-                setProjects(fallbackProjects);
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadProjects();
     }, []);
 
     return (
-        <section ref={sectionRef} className="py-24 lg:py-32 bg-black border-b border-zinc-900 overflow-hidden">
+        <section ref={sectionRef} className="py-24 lg:py-32 bg-black border-b border-zinc-900 overflow-hidden relative">
             <div className="container-width mb-12">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -118,11 +157,11 @@ export default function Showcase() {
                 >
                     <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-4">What We Build</h2>
                     <h3 className="text-3xl text-white font-medium tracking-tight mb-3">
-                        Production-ready. Custom branded. On demand.
+                        Production ready. Custom branded. On demand.
                     </h3>
                     <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">
                         Every product ships with your logo, your domain, your colors.
-                        We build, you own — fully white-labeled and ready to launch.
+                        We build, you own — fully white labeled and ready to launch.
                     </p>
                 </motion.div>
             </div>
@@ -131,13 +170,14 @@ export default function Showcase() {
                 className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 md:px-6 lg:px-[calc((100vw-1200px)/2+48px)] pb-12 scrollbar-none"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {projects.map((project, index) => (
+                {showcaseProjects.map((project, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 30, scale: 0.95 }}
                         animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                        onClick={() => setSelectedProject(project)}
                         className="flex-none w-[85vw] md:w-[600px] h-[400px] snap-center rounded-2xl bg-zinc-950 border border-zinc-800/50 relative overflow-hidden group cursor-pointer"
                     >
                         <motion.div
@@ -145,7 +185,7 @@ export default function Showcase() {
                         />
 
                         {mounted && (
-                            <div className="absolute inset-0">
+                            <div className="absolute inset-0 pointer-events-none">
                                 {project.type === "fintech" && <FintechAnimation />}
                                 {project.type === "health" && <HealthAnimation />}
                                 {project.type === "cloud" && <CloudAutomationAnimation />}
@@ -160,13 +200,13 @@ export default function Showcase() {
                         )}
 
                         <motion.div
-                            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                            className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
                             style={{
                                 background: 'linear-gradient(135deg, transparent, rgba(255,255,255,0.02), transparent)',
                             }}
                         />
 
-                        <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black via-black/90 to-transparent">
+                        <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black via-black/90 to-transparent pointer-events-none">
                             <motion.span
                                 className="text-[10px] font-medium text-zinc-500 mb-2 block uppercase tracking-[0.2em]"
                                 initial={{ opacity: 0, x: -10 }}
@@ -193,15 +233,115 @@ export default function Showcase() {
                             </motion.p>
                         </div>
 
-                        <motion.div className="absolute top-6 right-6">
-                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm border border-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                        <motion.div className="absolute top-6 right-6 pointer-events-auto">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedProject(project);
+                                }}
+                                className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm border border-white/5 opacity-0 group-hover:opacity-100 transition-all duration-500 hover:bg-white/10"
+                            >
                                 <span className="text-white/60 text-sm">→</span>
-                            </div>
+                            </button>
                         </motion.div>
                     </motion.div>
                 ))}
                 <div className="flex-none w-6 lg:w-[calc((100vw-1200px)/2)]" />
             </div>
+
+            <AnimatePresence>
+                {selectedProject && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
+                        onClick={() => setSelectedProject(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl relative"
+                        >
+                            <button
+                                onClick={() => setSelectedProject(null)}
+                                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors z-10"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+
+                            <div className="p-8">
+                                <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2 block">{selectedProject.category}</span>
+                                <h3 className="text-3xl font-bold text-white mb-2">{selectedProject.title}</h3>
+                                <p className="text-zinc-400 text-lg mb-8 leading-relaxed max-w-xl">{selectedProject.details.headline}</p>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                    <div>
+                                        <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                                            <span className="w-1 h-1 bg-emerald-500 rounded-full"></span>
+                                            Core Capabilities
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {selectedProject.details.capabilities.map((item, i) => (
+                                                <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
+                                                    <span className="text-zinc-600 mt-0.5">›</span> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                                            <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
+                                            Business Benefits
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {selectedProject.details.benefits.map((item, i) => (
+                                                <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
+                                                    <span className="text-zinc-600 mt-0.5">›</span> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-zinc-800/50 pt-6">
+                                    <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest mb-3">Tech Stack</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedProject.details.stack.map((tech, i) => (
+                                            <span key={i} className="px-2.5 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-xs text-zinc-300 font-mono">
+                                                {tech}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-zinc-950/50 p-4 border-t border-zinc-800 flex justify-between items-center">
+                                <span className="text-xs text-zinc-500">Ready to deploy in 2-4 weeks</span>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedProject(null);
+                                        const contactSection = document.getElementById('collaborate');
+                                        if (contactSection) {
+                                            contactSection.scrollIntoView({ behavior: 'smooth' });
+                                            // Update URL without reload
+                                            window.history.pushState({}, '', `?project=${encodeURIComponent(selectedProject.title)}`);
+                                            // Dispatch a custom event so Collaborate component can listen
+                                            window.dispatchEvent(new Event('projectSelected'));
+                                        }
+                                    }}
+                                    className="px-4 py-2 bg-white text-black text-xs font-medium rounded hover:bg-zinc-200 transition-colors uppercase tracking-wider"
+                                >
+                                    Start Project
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }
@@ -583,8 +723,8 @@ function ChatbotAnimation() {
                         transition={{ delay: i * 0.8, duration: 0.3 }}
                     >
                         <div className={`max-w-[75%] px-3 py-2 rounded-xl text-[11px] leading-relaxed ${msg.type === "user"
-                                ? "bg-white/10 text-zinc-300 rounded-br-sm"
-                                : "bg-zinc-800/60 text-zinc-400 border border-zinc-700/50 rounded-bl-sm"
+                            ? "bg-white/10 text-zinc-300 rounded-br-sm"
+                            : "bg-zinc-800/60 text-zinc-400 border border-zinc-700/50 rounded-bl-sm"
                             }`}>
                             {msg.text}
                         </div>

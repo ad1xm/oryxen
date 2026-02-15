@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 
 export default function Capabilities() {
     const sectionRef = useRef(null);
@@ -160,9 +160,39 @@ export default function Capabilities() {
                         )}
                     </motion.div>
 
-                    {/* Card 5: Cloud Infrastructure - Large */}
+                    {/* Card 5: AI Solutions */}
                     <motion.div
-                        className="lg:col-span-2 bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800/50 overflow-hidden"
+                        className="bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800/50 overflow-hidden"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                    >
+                        <div className="p-6 pb-4">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                                    <svg className="w-5 h-5 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                        <circle cx="12" cy="12" r="10" strokeDasharray="60" strokeDashoffset="20" />
+                                        <circle cx="12" cy="12" r="4" />
+                                        <path d="M12 2v4M12 18v4M2 12h4M18 12h4" strokeLinecap="round" />
+                                    </svg>
+                                </div>
+                                <h3 className="text-xl font-semibold text-white">AI Solutions</h3>
+                            </div>
+                            <p className="text-zinc-400 text-sm mb-2 font-medium">Intelligent Automation</p>
+                            <p className="text-zinc-400 text-sm leading-relaxed">
+                                Neural networks, LLM integration, predictive analytics.
+                            </p>
+                        </div>
+                        {mounted && (
+                            <div className="h-36 relative border-t border-zinc-800/30 bg-zinc-950/50 flex items-center justify-center">
+                                <AIAnimation />
+                            </div>
+                        )}
+                    </motion.div>
+
+                    {/* Card 6: Cloud Infrastructure - Full Width */}
+                    <motion.div
+                        className="lg:col-span-3 bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800/50 overflow-hidden"
                         initial={{ opacity: 0, y: 30 }}
                         animate={isInView ? { opacity: 1, y: 0 } : {}}
                         transition={{ duration: 0.5, delay: 0.5 }}
@@ -355,134 +385,271 @@ function MobileAnimation() {
     );
 }
 
-// Premium Backend Animation - Data Flow
+// Premium Backend Animation - Server Architecture Flow
 function BackendAnimation() {
+    const logs = [
+        { method: "GET", route: "/api/users", status: "200", time: "12ms" },
+        { method: "POST", route: "/api/orders", status: "201", time: "34ms" },
+        { method: "GET", route: "/api/products", status: "200", time: "8ms" },
+        { method: "PUT", route: "/api/settings", status: "200", time: "21ms" },
+    ];
+
     return (
-        <div className="relative w-full h-full">
-            <svg className="w-full h-full" viewBox="0 0 200 100">
-                <defs>
-                    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="rgba(255,255,255,0.6)" />
-                        <stop offset="100%" stopColor="rgba(255,255,255,0.3)" />
-                    </linearGradient>
-                    <filter id="glow2">
-                        <feGaussianBlur stdDeviation="2" result="blur" />
-                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                    </filter>
-                </defs>
-
-                {/* Database cylinders */}
-                <g transform="translate(30, 30)">
-                    {[0, 1, 2].map(i => (
-                        <g key={i} transform={`translate(0, ${i * 15})`}>
-                            <motion.ellipse
-                                cx="15" cy="5" rx="15" ry="5"
-                                fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="1"
-                                animate={{ stroke: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.15)"] }}
-                                transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                            />
-                            <motion.rect
-                                x="0" y="5" width="30" height="10"
-                                fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" strokeWidth="1"
-                            />
-                        </g>
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="w-full h-full flex gap-3">
+                {/* Server rack visualization */}
+                <div className="w-16 flex flex-col gap-1.5 justify-center">
+                    {[
+                        { label: "DB", load: 0.62 },
+                        { label: "API", load: 0.84 },
+                        { label: "CDN", load: 0.41 },
+                    ].map((server, i) => (
+                        <motion.div
+                            key={i}
+                            className="bg-zinc-800/50 rounded-md border border-zinc-700/30 p-1.5"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.15 }}
+                        >
+                            <div className="flex items-center gap-1 mb-1">
+                                <motion.div
+                                    className="w-1.5 h-1.5 rounded-full bg-emerald-500/70"
+                                    animate={{ opacity: [0.5, 1, 0.5] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
+                                />
+                                <span className="text-[7px] text-zinc-400 font-mono">{server.label}</span>
+                            </div>
+                            <div className="h-1 bg-zinc-900 rounded-full overflow-hidden">
+                                <motion.div
+                                    className="h-full bg-white/30 rounded-full"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${server.load * 100}%` }}
+                                    transition={{ duration: 1, delay: 0.3 + i * 0.15 }}
+                                />
+                            </div>
+                        </motion.div>
                     ))}
-                </g>
+                </div>
 
-                {/* API Gateway */}
-                <motion.rect
-                    x="85" y="35" width="30" height="30" rx="4"
-                    fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" strokeWidth="1"
-                    animate={{ stroke: ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.5)", "rgba(255,255,255,0.2)"] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                />
-                <text x="100" y="54" textAnchor="middle" className="text-[8px] fill-zinc-400 font-mono">API</text>
-
-                {/* Client nodes */}
-                {[0, 1, 2].map(i => (
-                    <motion.circle
-                        key={i}
-                        cx={160} cy={25 + i * 25} r="8"
-                        fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" strokeWidth="1"
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-                    />
-                ))}
-
-                {/* Data flow lines */}
-                <motion.line x1="60" y1="50" x2="85" y2="50" stroke="url(#dataGrad)" strokeWidth="2" strokeDasharray="4 2"
-                    animate={{ strokeDashoffset: [0, -20] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.line x1="115" y1="40" x2="152" y2="25" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
-                    animate={{ strokeDashoffset: [0, -20] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.2 }}
-                />
-                <motion.line x1="115" y1="50" x2="152" y2="50" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
-                    animate={{ strokeDashoffset: [0, -20] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.4 }}
-                />
-                <motion.line x1="115" y1="60" x2="152" y2="75" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeDasharray="4 2"
-                    animate={{ strokeDashoffset: [0, -20] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear", delay: 0.6 }}
-                />
-
-                {/* Traveling data packets */}
-                <motion.circle r="3" fill="url(#dataGrad)" filter="url(#glow2)"
-                    animate={{ cx: [60, 85, 85], cy: [50, 50, 50], opacity: [1, 1, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                />
-            </svg>
+                {/* Live request log */}
+                <div className="flex-1 bg-zinc-900/40 rounded-lg border border-zinc-700/30 overflow-hidden">
+                    <div className="h-4 bg-zinc-800/50 flex items-center px-2 border-b border-zinc-700/20">
+                        <div className="text-[7px] font-mono text-zinc-500">REQUEST LOG</div>
+                        <motion.div
+                            className="ml-auto w-1 h-1 bg-emerald-500/80 rounded-full"
+                            animate={{ opacity: [0.3, 1, 0.3] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                        />
+                    </div>
+                    <div className="p-1.5 space-y-1">
+                        {logs.map((log, i) => (
+                            <motion.div
+                                key={i}
+                                className="flex items-center gap-1.5 font-mono text-[7px]"
+                                initial={{ opacity: 0, x: 8 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5 + i * 0.4, duration: 0.3 }}
+                            >
+                                <span className={`font-bold ${log.method === "POST" ? "text-amber-400/70" : log.method === "PUT" ? "text-blue-400/70" : "text-emerald-400/70"}`}>
+                                    {log.method}
+                                </span>
+                                <span className="text-zinc-500 truncate flex-1">{log.route}</span>
+                                <span className="text-emerald-400/60">{log.status}</span>
+                                <span className="text-zinc-600">{log.time}</span>
+                            </motion.div>
+                        ))}
+                        <motion.div
+                            className="flex items-center gap-1"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 2.2 }}
+                        >
+                            <motion.span
+                                className="text-[7px] text-zinc-500 font-mono"
+                                animate={{ opacity: [0, 1, 0] }}
+                                transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                                awaiting...
+                            </motion.span>
+                        </motion.div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
 
-// Premium Realtime Animation - Signal Waves
+// Premium Realtime Animation - WebSocket Event Stream
 function RealtimeAnimation() {
+    const events = [
+        { type: "connect", user: "user_291", time: "0.2s" },
+        { type: "message", user: "user_847", time: "0.1s" },
+        { type: "update", user: "user_103", time: "0.3s" },
+        { type: "sync", user: "broadcast", time: "0.0s" },
+    ];
+
     return (
-        <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative w-32 h-32">
-                {/* Central transmitter */}
-                <motion.div
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-gradient-to-br from-white/30 to-white/10 rounded-lg flex items-center justify-center"
-                    animate={{ rotate: [0, 90, 180, 270, 360] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                >
-                    <motion.div
-                        className="w-3 h-3 bg-white rounded-sm"
-                        animate={{ scale: [1, 0.8, 1] }}
-                        transition={{ duration: 0.5, repeat: Infinity }}
-                    />
-                </motion.div>
+        <div className="absolute inset-0 flex items-center justify-center p-4">
+            <div className="w-full h-full flex flex-col gap-2">
+                {/* Connection status bar */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                        <motion.div
+                            className="w-2 h-2 bg-emerald-500/80 rounded-full"
+                            animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
+                            transition={{ duration: 1.2, repeat: Infinity }}
+                        />
+                        <span className="text-[8px] text-zinc-400 font-mono">ws://live</span>
+                    </div>
+                    <div className="flex gap-1 items-end h-4">
+                        {[0, 1, 2, 3, 4].map(i => (
+                            <motion.div
+                                key={i}
+                                className="w-1 bg-white/30 rounded-full"
+                                animate={{ height: [3, 8 + Math.random() * 8, 3] }}
+                                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.12 }}
+                                style={{ height: 3 }}
+                            />
+                        ))}
+                    </div>
+                </div>
 
-                {/* Wave rings */}
-                {[1, 2, 3, 4].map(i => (
+                {/* Event stream */}
+                <div className="flex-1 bg-zinc-900/40 rounded-lg border border-zinc-700/30 overflow-hidden">
+                    <div className="h-4 bg-zinc-800/40 flex items-center px-2 border-b border-zinc-700/20">
+                        <div className="text-[7px] font-mono text-zinc-500">EVENT STREAM</div>
+                        <motion.span
+                            className="ml-auto text-[7px] font-mono text-zinc-600"
+                            animate={{ opacity: [0.3, 0.8, 0.3] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                        >
+                            142 events/s
+                        </motion.span>
+                    </div>
+                    <div className="p-1.5 space-y-1">
+                        {events.map((event, i) => (
+                            <motion.div
+                                key={i}
+                                className="flex items-center gap-1.5 font-mono text-[7px]"
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 + i * 0.5 }}
+                            >
+                                <motion.div
+                                    className={`w-1 h-1 rounded-full ${event.type === "connect" ? "bg-emerald-400" : event.type === "sync" ? "bg-amber-400" : "bg-blue-400"}`}
+                                    animate={{ opacity: [0.4, 1, 0.4] }}
+                                    transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+                                />
+                                <span className="text-zinc-500">{event.type}</span>
+                                <span className="text-zinc-600 flex-1 truncate">{event.user}</span>
+                                <span className="text-zinc-600">{event.time}</span>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Activity sparkline */}
+                <div className="flex items-end gap-px h-4">
+                    {Array.from({ length: 24 }).map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="flex-1 bg-white/20 rounded-t-sm"
+                            animate={{ height: [`${20 + Math.random() * 30}%`, `${50 + Math.random() * 50}%`, `${20 + Math.random() * 30}%`] }}
+                            transition={{ duration: 1.5 + Math.random(), repeat: Infinity, delay: i * 0.05 }}
+                            style={{ height: "30%" }}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Premium Cloud Animation - Deployment Pipeline
+function CloudAnimation() {
+    const regions = [
+        { name: "US East", status: "active", latency: "12ms" },
+        { name: "EU West", status: "active", latency: "28ms" },
+        { name: "AP South", status: "scaling", latency: "45ms" },
+    ];
+
+    return (
+        <div className="absolute inset-0 p-4 flex flex-col gap-2">
+            {/* Deploy pipeline */}
+            <div className="flex items-center gap-1.5">
+                {["Build", "Test", "Stage", "Deploy"].map((step, i) => (
                     <motion.div
-                        key={i}
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20"
-                        style={{ width: 24 + i * 24, height: 24 + i * 24 }}
-                        animate={{
-                            scale: [1, 1.2, 1],
-                            opacity: [0.6, 0.2, 0.6],
-                            borderColor: ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.05)", "rgba(255,255,255,0.2)"]
-                        }}
-                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: "easeOut" }}
-                    />
+                        key={step}
+                        className="flex items-center gap-1"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: i * 0.3 }}
+                    >
+                        <motion.div
+                            className={`w-5 h-5 rounded-md flex items-center justify-center text-[6px] font-mono border ${i < 3 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400/80" : "bg-zinc-800/50 border-zinc-700/30 text-zinc-500"}`}
+                            animate={i === 3 ? { borderColor: ["rgba(63,63,70,0.3)", "rgba(255,255,255,0.3)", "rgba(63,63,70,0.3)"] } : {}}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                            {i < 3 ? "✓" : "⟳"}
+                        </motion.div>
+                        {i < 3 && (
+                            <motion.div
+                                className="w-3 h-px bg-emerald-500/30"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ delay: i * 0.3 + 0.2 }}
+                            />
+                        )}
+                    </motion.div>
                 ))}
+                <motion.span
+                    className="ml-auto text-[7px] font-mono text-zinc-500"
+                    animate={{ opacity: [0.4, 0.8, 0.4] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                >
+                    v2.4.1
+                </motion.span>
+            </div>
 
-                {/* Data particles */}
-                {[0, 72, 144, 216, 288].map((angle, i) => (
+            {/* Region cards */}
+            <div className="flex-1 flex flex-col gap-1.5 justify-center">
+                {regions.map((region, i) => (
                     <motion.div
                         key={i}
-                        className="absolute left-1/2 top-1/2 w-1.5 h-1.5 bg-white/50 rounded-full"
-                        style={{
-                            transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-48px)`
-                        }}
-                        animate={{
-                            opacity: [0, 1, 0],
-                            scale: [0.5, 1, 0.5]
-                        }}
-                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
+                        className="flex items-center gap-2 bg-zinc-900/40 rounded-md border border-zinc-700/20 px-2 py-1.5"
+                        initial={{ opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 + i * 0.15 }}
+                    >
+                        <motion.div
+                            className={`w-1.5 h-1.5 rounded-full ${region.status === "active" ? "bg-emerald-500/80" : "bg-amber-400/80"}`}
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
+                        />
+                        <span className="text-[7px] font-mono text-zinc-400 flex-1">{region.name}</span>
+                        <span className="text-[7px] font-mono text-zinc-600">{region.latency}</span>
+                        {/* Mini load bar */}
+                        <div className="w-10 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                            <motion.div
+                                className="h-full bg-white/25 rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: [`${30 + i * 15}%`, `${60 + i * 10}%`, `${30 + i * 15}%`] }}
+                                transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
+                            />
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Traffic distribution */}
+            <div className="flex items-end gap-px h-5">
+                {Array.from({ length: 20 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="flex-1 bg-white/15 rounded-t-sm"
+                        animate={{ height: ["20%", "50%", "20%"] }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.05 }}
+                        style={{ height: "20%" }}
                     />
                 ))}
             </div>
@@ -490,90 +657,89 @@ function RealtimeAnimation() {
     );
 }
 
-// Premium Cloud Animation - Global Network
-function CloudAnimation() {
-    const cities = [
-        { x: 25, y: 40, name: "SF" },
-        { x: 45, y: 30, name: "NYC" },
-        { x: 55, y: 50, name: "LON" },
-        { x: 70, y: 35, name: "TOK" },
-        { x: 80, y: 55, name: "SYD" },
-    ];
+// Premium AI Animation - AI Cortex Visualization
+function AIAnimation() {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null;
 
     return (
-        <div className="absolute inset-4">
-            <svg className="w-full h-full" viewBox="0 0 100 80">
-                <defs>
-                    <filter id="cloudGlow">
-                        <feGaussianBlur stdDeviation="1.5" result="blur" />
-                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                    </filter>
-                </defs>
+        <div className="absolute inset-0 overflow-hidden flex items-center justify-center bg-black">
+            {/* Background Grid */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
 
-                {/* Connection lines */}
-                {cities.map((city, i) =>
-                    cities.slice(i + 1).map((target, j) => (
-                        <motion.line
-                            key={`${i}-${j}`}
-                            x1={`${city.x}%`} y1={`${city.y}%`}
-                            x2={`${target.x}%`} y2={`${target.y}%`}
-                            stroke="rgba(255,255,255,0.1)"
-                            strokeWidth="0.5"
-                            strokeDasharray="2 2"
-                            animate={{ strokeDashoffset: [0, -10] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        />
-                    ))
-                )}
+            {/* Central Intelligence Core */}
+            <div className="relative flex items-center justify-center w-full h-full">
 
-                {/* City nodes */}
-                {cities.map((city, i) => (
-                    <g key={i}>
-                        <motion.circle
-                            cx={`${city.x}%`} cy={`${city.y}%`}
-                            r="6"
-                            fill="rgba(255,255,255,0.05)"
-                            stroke="rgba(255,255,255,0.3)"
-                            strokeWidth="1"
-                            filter="url(#cloudGlow)"
-                            animate={{
-                                r: [6, 8, 6],
-                                fill: ["rgba(255,255,255,0.05)", "rgba(255,255,255,0.1)", "rgba(255,255,255,0.05)"]
-                            }}
-                            transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                        />
-                        <text
-                            x={`${city.x}%`} y={`${city.y + 12}%`}
-                            textAnchor="middle"
-                            className="text-[6px] fill-zinc-500 font-mono"
-                        >
-                            {city.name}
-                        </text>
-                    </g>
+                {/* Outer Rotating Ring - Data Stream */}
+                <motion.div
+                    className="absolute w-[280px] h-[280px] opacity-20"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                >
+                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                        <path d="M50 10 A 40 40 0 0 1 90 50" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-purple-500" />
+                        <path d="M50 90 A 40 40 0 0 1 10 50" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-purple-500" />
+                    </svg>
+                </motion.div>
+
+                {/* Middle Rotating Ring - Processing Layer */}
+                <motion.div
+                    className="absolute w-40 h-40 rounded-full border border-purple-500/20 border-dashed"
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Inner Ring - Active Analysis */}
+                <motion.div
+                    className="absolute w-24 h-24 rounded-full border border-cyan-500/30"
+                    animate={{ rotate: 360, scale: [1, 1.05, 1] }}
+                    transition={{
+                        rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+                        scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                    }}
+                >
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+                </motion.div>
+
+                {/* Core Nucleus */}
+                <motion.div
+                    className="absolute w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-cyan-600 blur-sm opacity-80"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.6, 0.9, 0.6] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <div className="absolute w-8 h-8 rounded-full bg-white/90 shadow-[0_0_20px_rgba(168,85,247,0.8)] z-10" />
+
+                {/* Scanning Radar Effect */}
+                <motion.div
+                    className="absolute w-64 h-64 bg-[conic-gradient(from_0deg,transparent_0deg,rgba(168,85,247,0.1)_60deg,transparent_100deg)] rounded-full"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                />
+
+                {/* Floating Data Particles */}
+                {Array.from({ length: 8 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute text-[8px] font-mono text-purple-300/60"
+                        initial={{ opacity: 0, x: 0, y: 0 }}
+                        animate={{
+                            opacity: [0, 1, 0],
+                            x: (Math.random() - 0.5) * 150,
+                            y: (Math.random() - 0.5) * 150,
+                        }}
+                        transition={{
+                            duration: 2 + Math.random() * 2,
+                            repeat: Infinity,
+                            delay: Math.random() * 2,
+                            repeatDelay: Math.random()
+                        }}
+                    >
+                        {Math.random() > 0.5 ? '1' : '0'}
+                    </motion.div>
                 ))}
-
-                {/* Traveling packets */}
-                <motion.circle
-                    r="2"
-                    fill="white"
-                    filter="url(#cloudGlow)"
-                    animate={{
-                        cx: [`${cities[0].x}%`, `${cities[1].x}%`, `${cities[2].x}%`, `${cities[3].x}%`, `${cities[4].x}%`, `${cities[0].x}%`],
-                        cy: [`${cities[0].y}%`, `${cities[1].y}%`, `${cities[2].y}%`, `${cities[3].y}%`, `${cities[4].y}%`, `${cities[0].y}%`],
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.circle
-                    r="2"
-                    fill="rgba(255,255,255,0.6)"
-                    filter="url(#cloudGlow)"
-                    animate={{
-                        cx: [`${cities[4].x}%`, `${cities[3].x}%`, `${cities[2].x}%`, `${cities[1].x}%`, `${cities[0].x}%`, `${cities[4].x}%`],
-                        cy: [`${cities[4].y}%`, `${cities[3].y}%`, `${cities[2].y}%`, `${cities[1].y}%`, `${cities[0].y}%`, `${cities[4].y}%`],
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "linear", delay: 3 }}
-                />
-            </svg>
+            </div>
         </div>
     );
 }

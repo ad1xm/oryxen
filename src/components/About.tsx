@@ -21,6 +21,67 @@ const iconMap: Record<string, React.ReactNode> = {
   "Clients": <Users className="w-5 h-5" />,
 };
 
+import { motion } from "framer-motion";
+
+function ManifestoBackground() {
+  return (
+    <div className="absolute inset-0 pointer-events-none select-none">
+      {/* Architectural Grid */}
+      <div className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }}
+      />
+
+      {/* Animated Scanning Line */}
+      <motion.div
+        className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-30"
+        animate={{ top: ["0%", "100%"] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Floating Tech Particles */}
+      <Particles />
+    </div>
+  );
+}
+
+function Particles() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <>
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-white/20 rounded-full"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            opacity: [0, 0.5, 0],
+            scale: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 2,
+            repeat: Infinity,
+            delay: Math.random() * 2,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 export default function About() {
   const [stats, setStats] = useState<Array<{ value: string; label: string; icon: React.ReactNode }>>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +111,7 @@ export default function About() {
 
   return (
     <section id="about" className="py-24 lg:py-32 relative overflow-hidden bg-black">
+      <ManifestoBackground />
       <div className="container-width relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 

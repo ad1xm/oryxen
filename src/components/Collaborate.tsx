@@ -17,6 +17,7 @@ const ConsultationScheduler = dynamic(() => import("./ConsultationScheduler"), {
 export default function Collaborate() {
   const [view, setView] = useState<"main" | "scheduler">("main");
   const [formState, setFormState] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [projectType, setProjectType] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,6 +30,25 @@ export default function Collaborate() {
   // Ensure client-side only rendering for interactive elements
   useEffect(() => {
     setIsClient(true);
+
+    // Check for project param on mount
+    const searchParams = new URLSearchParams(window.location.search);
+    const project = searchParams.get("project");
+    if (project) {
+      setProjectType(project);
+    }
+
+    // Listen for custom event from Showcase component
+    const handleProjectSelection = () => {
+      const params = new URLSearchParams(window.location.search);
+      const proj = params.get("project");
+      if (proj) {
+        setProjectType(proj);
+      }
+    };
+
+    window.addEventListener('projectSelected', handleProjectSelection);
+    return () => window.removeEventListener('projectSelected', handleProjectSelection);
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -44,6 +64,7 @@ export default function Collaborate() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "Project Inquiry",
+          projectInterest: projectType || "General Inquiry",
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
@@ -62,12 +83,16 @@ export default function Collaborate() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
-          name: formData.name
+          name: formData.name,
+          type: "inquiry", // or pass projectType to differentiate in API if needed
+          project: projectType, // Pass project name to API
+          description: formData.description // Pass description to API
         })
       });
 
       setFormState("success");
       setFormData({ name: "", email: "", phone: "", company: "", description: "" });
+      setProjectType(null); // Reset project type after success
     } catch {
       setFormState("error");
     }
@@ -166,6 +191,23 @@ export default function Collaborate() {
                 {formState === "error" && (
                   <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
                     Something went wrong. Please try again or email us directly.
+                  </div>
+                )}
+
+                {/* Project Badge */}
+                {projectType && (
+                  <div className="flex items-center justify-between p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                      <span className="text-sm text-emerald-400">Inquiry regarding: <span className="font-semibold text-white">{projectType}</span></span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProjectType(null)}
+                      className="text-xs text-emerald-500/60 hover:text-emerald-400"
+                    >
+                      Remove
+                    </button>
                   </div>
                 )}
 

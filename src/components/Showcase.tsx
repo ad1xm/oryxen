@@ -30,6 +30,15 @@ const fallbackProjects = [
 
 export default function Showcase() {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = direction === 'left' ? -600 : 600;
+            scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    };
+
     const isInView = useInView(sectionRef, { once: true, margin: "-50px" });
     const [mounted, setMounted] = useState(false);
     const [projects, setProjects] = useState<ShowcaseProject[]>([]);
@@ -73,7 +82,7 @@ export default function Showcase() {
 
     return (
         <section ref={sectionRef} className="py-24 lg:py-32 bg-black border-b border-zinc-900 overflow-hidden relative">
-            <div className="container-width mb-12">
+            <div className="container-width mb-12 flex justify-between items-end">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -88,9 +97,28 @@ export default function Showcase() {
                         We build, you own — fully white labeled and ready to launch.
                     </p>
                 </motion.div>
+
+                {/* Desktop Navigation Buttons */}
+                <div className="hidden lg:flex gap-3">
+                    <button
+                        onClick={() => scroll('left')}
+                        className="w-12 h-12 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm group"
+                        aria-label="Scroll left"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
+                    </button>
+                    <button
+                        onClick={() => scroll('right')}
+                        className="w-12 h-12 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm group"
+                        aria-label="Scroll right"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
+                    </button>
+                </div>
             </div>
 
             <div
+                ref={scrollContainerRef}
                 className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-4 md:px-6 lg:px-[calc((100vw-1200px)/2+48px)] pb-12 scrollbar-none"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >

@@ -34,7 +34,7 @@ export default function Hero() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover opacity-40"
+          className="w-full h-full object-cover opacity-40 grayscale"
         >
           <source src="/landing page video.mp4" type="video/mp4" />
         </video>

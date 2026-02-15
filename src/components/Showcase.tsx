@@ -7,17 +7,9 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { getVisibleShowcaseProjects, type ShowcaseProject } from "@/lib/supabase";
 
 // Detailed showcase projects (fallback if DB is empty)
-const fallbackProjects = [
-    {
-        category: "Web Application",
-        title: "Fintech Dashboard",
-        description: "Real time trading analytics with sub millisecond data visualization. Custom branded for your firm.",
-        type: "fintech",
-        color: "from-zinc-800/50 to-zinc-900/50",
-        order: 1,
-        is_visible: true,
-        created_at: new Date().toISOString(),
-        id: "fallback-1",
+// Rich details for projects (fallback content)
+const RICH_PROJECT_DETAILS: Record<string, any> = {
+    "Fintech Dashboard": {
         details: {
             headline: "Institutional Grade Trading Platform",
             capabilities: ["Real time WebSocket data streaming", "Advanced chart visualization", "Instant order execution", "Portfolio risk management"],
@@ -25,8 +17,79 @@ const fallbackProjects = [
             stack: ["Next.js", "TypeScript", "Go", "PostgreSQL"]
         }
     },
-    // ... (other fallback items could be added here if critical, but user wants to hide items so empty is better)
-];
+    "Health Monitor": {
+        details: {
+            headline: "Connected Health Ecosystem",
+            capabilities: ["Bluetooth device integration", "Live vital sign monitoring", "Secure health data storage", "Doctor patient communication"],
+            benefits: ["Remote patient monitoring", "Early warning detection", "HIPAA compliant architecture"],
+            stack: ["React Native", "Swift", "Node.js", "MongoDB"]
+        }
+    },
+    "Cloud Automation": {
+        details: {
+            headline: "Intelligent Infrastructure Management",
+            capabilities: ["Auto scaling container orchestration", "Multi region failover", "Infrastructure as Code", "Cost optimization analytics"],
+            benefits: ["Zero downtime deployments", "Reduced infrastructure costs", "Global low latency availability"],
+            stack: ["Kubernetes", "Terraform", "AWS", "Rust"]
+        }
+    },
+    "Logistics Engine": {
+        details: {
+            headline: "Supply Chain Intelligence",
+            capabilities: ["Route optimization algorithms", "Real time fleet tracking", "Demand forecasting AI", "Warehouse automation integration"],
+            benefits: ["Reduce delivery times", "Optimize inventory levels", "Lower operational costs"],
+            stack: ["Python", "TensorFlow", "PostGIS", "Redis"]
+        }
+    },
+    "E Commerce Storefront": {
+        details: {
+            headline: "Modern Digital Commerce",
+            capabilities: ["Headless commerce architecture", "One click checkout", "Inventory synchronization", "Customer behavior analytics"],
+            benefits: ["Increase conversion rates", "Seamless omnichannel experience", "Scale to millions of users"],
+            stack: ["Next.js", "Stripe", "Prisma", "Vercel"]
+        }
+    },
+    "AI Chatbot & Support": {
+        details: {
+            headline: "Intelligent Customer Service",
+            capabilities: ["Natural Language Processing", "Context aware responses", "Ticket escalation routing", "Multilingual support"],
+            benefits: ["24/7 customer support", "Reduce support team load", "Consistent brand voice"],
+            stack: ["OpenAI API", "Python", "Vector DB", "FastAPI"]
+        }
+    },
+    "CRM & Sales Pipeline": {
+        details: {
+            headline: "Revenue Operations Platform",
+            capabilities: ["Pipeline visualization", "Automated email sequences", "Activity tracking", "Performance forecasting"],
+            benefits: ["Close deals faster", "Improve sales team efficiency", "Data driven decision making"],
+            stack: ["React", "GraphQL", "Node.js", "PostgreSQL"]
+        }
+    },
+    "LMS & Course Portal": {
+        details: {
+            headline: "Educational Experience Platform",
+            capabilities: ["Video streaming & transcoding", "Interactive quizzes", "Progress certification", "Subscription management"],
+            benefits: ["Monetize your expertise", "Engage students effectively", "Scale your educational content"],
+            stack: ["Next.js", "Mux", "Supabase", "Stripe"]
+        }
+    },
+    "Appointment Scheduler": {
+        details: {
+            headline: "Advanced Scheduling Solution",
+            capabilities: ["Real time availability sync", "Automated SMS reminders", "Staff management", "Recurring bookings"],
+            benefits: ["Eliminate double bookings", "Reduce no shows", "Streamline business operations"],
+            stack: ["React", "Firebase", "Twilio", "Google Calendar API"]
+        }
+    },
+    "Food Delivery Platform": {
+        details: {
+            headline: "On Demand Delivery Network",
+            capabilities: ["Geospatial routing engine", "Real time status updates", "Driver dispatcher app", "Merchant tablet interface"],
+            benefits: ["Optimize delivery routes", "Maximize order throughput", "Complete platform ownership"],
+            stack: ["Flutter", "Go", "Redis", "PostGIS"]
+        }
+    }
+};
 
 export default function Showcase() {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -50,29 +113,30 @@ export default function Showcase() {
         async function loadProjects() {
             try {
                 const data = await getVisibleShowcaseProjects();
+
                 if (data && data.length > 0) {
-                    // Ensure details and color exist, or provide defaults
-                    const processedProjects = data.map(p => ({
-                        ...p,
-                        color: p.color || "from-zinc-800/50 to-zinc-900/50",
-                        details: p.details || {
+                    const processedProjects = data.map(p => {
+                        // Check if DB has details, if not, try to find in fallback
+                        const fallback = RICH_PROJECT_DETAILS[p.title];
+                        const mixedDetails = (p.details && p.details.headline) ? p.details : (fallback && fallback.details) ? fallback.details : {
                             headline: p.title,
                             capabilities: [],
                             benefits: [],
                             stack: []
-                        }
-                    }));
+                        };
+
+                        return {
+                            ...p,
+                            color: p.color || "from-zinc-800/50 to-zinc-900/50",
+                            details: mixedDetails
+                        };
+                    });
                     setProjects(processedProjects);
                 } else {
-                    // Start with empty/loading state basically, 
-                    // or if specifically requested by user logic:
-                    // setProjects(fallbackProjects); 
-                    // But here the goal is sync with admin, so if admin returns empty, show empty.
                     setProjects([]);
                 }
             } catch (error) {
                 console.error("Failed to load showcase projects:", error);
-                // Fallback to avoid empty section on error if critical
                 setProjects([]);
             }
         }

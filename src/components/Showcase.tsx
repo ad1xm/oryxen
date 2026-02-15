@@ -279,21 +279,21 @@ export default function Showcase() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl relative"
+                            className="w-full max-w-2xl max-h-[85vh] flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl relative"
                         >
                             <button
                                 onClick={() => setSelectedProject(null)}
-                                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors z-10"
+                                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors z-10 bg-zinc-900/50 backdrop-blur-sm p-1 rounded-full"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
 
-                            <div className="p-8">
+                            <div className="p-5 md:p-8 overflow-y-auto custom-scrollbar">
                                 <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-2 block">{selectedProject.category}</span>
-                                <h3 className="text-3xl font-bold text-white mb-2">{selectedProject.title}</h3>
-                                <p className="text-zinc-400 text-lg mb-8 leading-relaxed max-w-xl">{selectedProject.details?.headline || selectedProject.description}</p>
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">{selectedProject.title}</h3>
+                                <p className="text-zinc-400 text-base md:text-lg mb-6 md:mb-8 leading-relaxed max-w-xl">{selectedProject.details?.headline || selectedProject.description}</p>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
                                     <div>
                                         <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                                             <span className="w-1 h-1 bg-emerald-500 rounded-full"></span>
@@ -301,7 +301,7 @@ export default function Showcase() {
                                         </h4>
                                         <ul className="space-y-2">
                                             {selectedProject.details?.capabilities?.map((item, i) => (
-                                                <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
+                                                <li key={i} className="text-xs md:text-sm text-zinc-400 flex items-start gap-2">
                                                     <span className="text-zinc-600 mt-0.5">›</span> {item}
                                                 </li>
                                             ))}
@@ -314,7 +314,7 @@ export default function Showcase() {
                                         </h4>
                                         <ul className="space-y-2">
                                             {selectedProject.details?.benefits?.map((item, i) => (
-                                                <li key={i} className="text-sm text-zinc-400 flex items-start gap-2">
+                                                <li key={i} className="text-xs md:text-sm text-zinc-400 flex items-start gap-2">
                                                     <span className="text-zinc-600 mt-0.5">›</span> {item}
                                                 </li>
                                             ))}
@@ -326,7 +326,7 @@ export default function Showcase() {
                                     <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest mb-3">Tech Stack</h4>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedProject.details?.stack?.map((tech, i) => (
-                                            <span key={i} className="px-2.5 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-xs text-zinc-300 font-mono">
+                                            <span key={i} className="px-2 py-1 md:px-2.5 md:py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-[10px] md:text-xs text-zinc-300 font-mono">
                                                 {tech}
                                             </span>
                                         ))}
@@ -334,7 +334,7 @@ export default function Showcase() {
                                 </div>
                             </div>
 
-                            <div className="bg-zinc-950/50 p-4 border-t border-zinc-800 flex justify-between items-center">
+                            <div className="bg-zinc-950/50 p-4 border-t border-zinc-800 flex justify-between items-center shrink-0">
                                 <span className="text-xs text-zinc-500">Ready to deploy in 2-4 weeks</span>
                                 <button
                                     onClick={(e) => {

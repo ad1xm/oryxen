@@ -10,17 +10,17 @@ export default function Hero() {
   const headlineWords = [
     { text: "We", delay: 0 },
     { text: "build", delay: 0.1 },
-    { text: "digital", delay: 0.2 },
   ];
 
   const headlineWords2 = [
-    { text: "systems", delay: 0.4, muted: true },
-    { text: "for", delay: 0.5 },
+    { text: "digital", delay: 0.2 },
+    { text: "systems", delay: 0.3, muted: true },
   ];
 
   const headlineWords3 = [
-    { text: "what's", delay: 0.6 },
-    { text: "next.", delay: 0.7 },
+    { text: "for", delay: 0.4 },
+    { text: "what's", delay: 0.5 },
+    { text: "next.", delay: 0.6 },
   ];
 
   return (

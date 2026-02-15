@@ -173,6 +173,7 @@ export default function Collaborate() {
                 <div className="space-y-2">
                   <label htmlFor="collab-name" className="text-sm font-medium text-zinc-300">Name *</label>
                   <input
+                    suppressHydrationWarning
                     required
                     name="name"
                     id="collab-name"
@@ -189,6 +190,7 @@ export default function Collaborate() {
                 <div className="space-y-2">
                   <label htmlFor="collab-email" className="text-sm font-medium text-zinc-300">Email *</label>
                   <input
+                    suppressHydrationWarning
                     required
                     name="email"
                     id="collab-email"
@@ -208,6 +210,7 @@ export default function Collaborate() {
                     Phone *
                   </label>
                   <input
+                    suppressHydrationWarning
                     required
                     name="phone"
                     id="collab-phone"
@@ -224,6 +227,7 @@ export default function Collaborate() {
                 <div className="space-y-2">
                   <label htmlFor="collab-company" className="text-sm font-medium text-zinc-300">Company (optional)</label>
                   <input
+                    suppressHydrationWarning
                     name="company"
                     id="collab-company"
                     type="text"
@@ -252,6 +256,7 @@ export default function Collaborate() {
 
                 <div className="pt-2 flex">
                   <button
+                    suppressHydrationWarning
                     type="submit"
                     disabled={formState === "submitting"}
                     className="ml-auto flex items-center gap-2 bg-white text-black px-8 py-3 rounded-md font-medium hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

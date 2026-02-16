@@ -122,7 +122,7 @@ export default function Products() {
 
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <a
-                  href="https://remarkable-crumble-3ab060.netlify.app/downloads/edgelightwind-download.zip"
+                  href="https://remarkable-crumble-3ab060.netlify.app/downloads/EdgeLightWind%201.0.zip"
                   className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white text-zinc-950 font-bold hover:bg-zinc-200 transition-colors group"
                 >
                   <img src="/windows.svg" alt="Windows" className="w-5 h-5" />

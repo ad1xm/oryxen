@@ -34,9 +34,7 @@ export const metadata: Metadata = {
     description: "We design, build, and scale software and AI-enhanced systems for founders and organizations.",
     type: "website",
   },
-  icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2309090b'/><circle cx='50' cy='50' r='30' stroke='white' stroke-width='12' fill='none'/></svg>",
-  },
+
 };
 
 export default function RootLayout({

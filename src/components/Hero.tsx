@@ -8,7 +8,7 @@ import CodeEditor from "./ui/CodeEditor";
 export default function Hero() {
 
   return (
-    <section className="relative min-h-screen flex items-center bg-black pt-24 pb-32 overflow-hidden border-b border-zinc-900">
+    <section className="relative min-h-[72vh] lg:min-h-[78vh] flex items-start bg-black pt-24 pb-16 lg:pt-28 lg:pb-20 overflow-hidden border-b border-zinc-900">
 
       {/* Subtle Animated Background */}
       {/* Video Background */}
@@ -30,18 +30,25 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
           {/* Text Content - With synchronized animations */}
-          <div className="relative z-20 text-center lg:text-left flex flex-col justify-center pt-8 lg:pt-16">
-            <div className="flex flex-col justify-center">
+          <div className="relative z-20 text-center lg:text-left flex flex-col justify-center">
+            <div className="flex flex-col justify-center max-w-2xl mx-auto lg:mx-0">
 
-              {/* Animated Headline */}
-              {/* Animated Headline */}
+              {/* SEO H1 — visible + keyword-reinforced */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="text-5xl sm:text-7xl tracking-tight text-white mb-8 leading-[1.1] font-[family-name:var(--font-playfair)] font-semibold"
+                className="tracking-tight text-white mb-5 lg:mb-6 leading-[1.05] font-[family-name:var(--font-playfair)] font-semibold"
               >
-                Where strategy meets craft
+                <span className="block text-3xl sm:text-4xl lg:text-5xl whitespace-nowrap">
+                  Where strategy meets
+                </span>
+                <span className="block text-5xl sm:text-6xl lg:text-7xl leading-[1.05]">
+                  engineering
+                </span>
+                <span className="block text-lg sm:text-xl lg:text-2xl mt-4 text-zinc-400 font-[family-name:var(--font-sora)] font-normal tracking-normal">
+                  Scalable software systems, architected in India. Built for global teams.
+                </span>
               </motion.h1>
 
               {/* Animated paragraph - fades in after headline */}
@@ -49,9 +56,9 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-lg sm:text-xl text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-12 font-[family-name:var(--font-sora)] font-normal"
+                className="text-lg sm:text-xl text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8 lg:mb-10 font-[family-name:var(--font-sora)] font-normal"
               >
-                We design, architect, and build bespoke digital solutions. Websites, applications, enterprise platforms, and AI-driven software tailored to your competitive edge.
+                We design, architect, and build bespoke digital solutions — custom web development, enterprise applications, and AI-driven software. Based in India, serving clients globally.
               </motion.p>
 
               {/* Animated buttons - slide in after paragraph */}

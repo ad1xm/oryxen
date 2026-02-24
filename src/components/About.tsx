@@ -129,6 +129,22 @@ export default function About() {
                 Oryxen is different. We are a product-first studio. We prioritize system architecture, data integrity, and user experience over decorative fluff. We build software that works.
               </p>
             </div>
+
+            {/* SEO Structured Keyword Block */}
+            <div className="pt-6 border-t border-zinc-800/50 space-y-4">
+              <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest">What We Do</h4>
+              <p className="text-base text-zinc-500 leading-relaxed">
+                Oryxen Systems Private Limited is a <strong className="text-zinc-300">software development company</strong> specializing in{" "}
+                <strong className="text-zinc-300">custom web development</strong>,{" "}
+                <strong className="text-zinc-300">AI-driven systems</strong>,{" "}
+                <strong className="text-zinc-300">full-stack engineering</strong>, and{" "}
+                <strong className="text-zinc-300">enterprise applications</strong>.
+                We deliver end-to-end software engineering solutions — from system architecture and cloud infrastructure to production-grade application deployment.
+              </p>
+              <p className="text-sm text-zinc-600 leading-relaxed">
+                Based in India, serving clients globally. We combine deep engineering expertise with strategic product thinking to build systems that scale.
+              </p>
+            </div>
           </div>
 
           {/* Architectural Stats */}

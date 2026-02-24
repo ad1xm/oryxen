@@ -13,6 +13,7 @@ import Legal from "@/components/Legal";
 import Contact from "@/components/Contact";
 import Collaborate from "@/components/Collaborate";
 import Footer from "@/components/Footer";
+import SEOContent from "@/components/SEOContent";
 
 export default function Home() {
   return (
@@ -31,6 +32,7 @@ export default function Home() {
       <Legal />
       <Contact />
       <Collaborate />
+      <SEOContent />
       <Footer />
     </main>
   );

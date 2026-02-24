@@ -176,6 +176,7 @@ export default function Showcase() {
                         onClick={() => scroll('left')}
                         className="w-12 h-12 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm group"
                         aria-label="Scroll left"
+                        suppressHydrationWarning
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-x-0.5 transition-transform"><path d="m15 18-6-6 6-6" /></svg>
                     </button>
@@ -183,6 +184,7 @@ export default function Showcase() {
                         onClick={() => scroll('right')}
                         className="w-12 h-12 rounded-full border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-400 hover:text-white transition-all flex items-center justify-center backdrop-blur-sm group"
                         aria-label="Scroll right"
+                        suppressHydrationWarning
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
                     </button>

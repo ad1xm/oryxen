@@ -16,8 +16,11 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-zinc-500 leading-relaxed font-mono">
-              © 2026 ORYXEN SYSTEMS <br />
-              A studio shaped by A. Choudhury
+              © 2026 Oryxen Systems Private Limited <br />
+              A studio shaped by Aditya Choudhury
+            </p>
+            <p className="text-xs text-zinc-600">
+              Based in India · Serving clients globally
             </p>
           </div>
 
@@ -26,18 +29,19 @@ export default function Footer() {
             <div>
               <h3 className="text-xs font-bold text-white uppercase tracking-widest mb-6">Index</h3>
               <ul className="space-y-4 text-sm text-zinc-500">
-                <li><Link href="#about" className="hover:text-white transition-colors">Manifesto</Link></li>
-                <li><Link href="#services" className="hover:text-white transition-colors">Capabilities</Link></li>
-                <li><Link href="#products" className="hover:text-white transition-colors">Infrastructure</Link></li>
+                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
+                <li><Link href="#services" className="hover:text-white transition-colors">Services</Link></li>
+                <li><Link href="/products" className="hover:text-white transition-colors">Products</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-xs font-bold text-white uppercase tracking-widest mb-6">Socials</h3>
               <ul className="space-y-4 text-sm text-zinc-500">
-                <li><Link href="https://github.com/oryxen" className="hover:text-white transition-colors">GitHub</Link></li>
-                <li><Link href="https://twitter.com/oryxen" className="hover:text-white transition-colors">Twitter</Link></li>
-                <li><Link href="https://linkedin.com/company/oryxen" className="hover:text-white transition-colors">LinkedIn</Link></li>
+                <li><a href="https://github.com/syncwithadi" target="_blank" rel="me noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
+                <li><Link href="https://twitter.com/oryxenhq" className="hover:text-white transition-colors">Twitter</Link></li>
+                <li><a href="https://linkedin.com/in/adityabuilds" target="_blank" rel="me noopener noreferrer" className="hover:text-white transition-colors">LinkedIn</a></li>
               </ul>
             </div>
           </div>
@@ -45,7 +49,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-zinc-700 font-mono">
-          <p>© 2026 ORYXEN SYSTEMS.</p>
+          <p>© 2026 Oryxen Systems Private Limited.</p>
           <div className="flex gap-6">
             <Link href="/ethics" className="hover:text-zinc-500 transition-colors uppercase">ETHICS</Link>
             <Link href="/privacy" className="hover:text-zinc-500 transition-colors uppercase">PRIVACY</Link>

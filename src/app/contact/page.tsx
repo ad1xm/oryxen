@@ -23,9 +23,9 @@ export default function ContactPage() {
         "name": "Contact Oryxen Systems Private Limited",
         "url": "https://oryxen.co.in/contact",
         "mainEntity": {
-            "@type": ["Organization", "Corporation"],
+            "@type": "Organization",
             "@id": "https://oryxen.co.in/#organization",
-            "name": "Oryxen Systems Private Limited",
+            "name": "Oryxen",
             "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "IN",

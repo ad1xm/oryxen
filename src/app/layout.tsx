@@ -66,10 +66,9 @@ export default function RootLayout({
   // JSON-LD Structured Data
   const organizationSchema = {
     "@context": "https://schema.org",
-    "@type": ["Organization", "Corporation"],
+    "@type": "Organization",
     "@id": "https://oryxen.co.in/#organization",
-    "name": "Oryxen Systems Private Limited",
-    "alternateName": "ORYXEN",
+    "name": "Oryxen",
     "url": "https://oryxen.co.in",
     "logo": "https://oryxen.co.in/logo.png",
     "image": "https://oryxen.co.in/logo.png",

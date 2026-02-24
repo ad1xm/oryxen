@@ -150,7 +150,7 @@ export default function BlogPost() {
                                 <div className="flex flex-wrap gap-3 mb-6">
                                     <span className="px-3 py-1 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-semibold">Easy to Hire</span>
                                     <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-xs font-semibold">Growing Market</span>
-                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">80K–150K</span>
+                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">80K to 150K</span>
                                 </div>
 
                                 <p className="mt-0">Python has cemented its position as the number one language for hiring in 2026. With 4.5 million developers globally and clear dominance in artificial intelligence, machine learning, and data science, it represents an unmatched talent pool. Every startup building generative AI applications needs Python developers on day one. <Link href="/products" className="text-indigo-400 hover:text-indigo-300">Our suite of AI-driven systems</Link> heavily leverages Python's capabilities.</p>
@@ -186,7 +186,7 @@ export default function BlogPost() {
                                 <div className="flex flex-wrap gap-3 mb-6">
                                     <span className="px-3 py-1 bg-yellow-500/10 text-yellow-500 rounded-full text-xs font-semibold">Easy to Hire</span>
                                     <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-xs font-semibold">Growing Market</span>
-                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">90K–160K</span>
+                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">90K to 160K</span>
                                 </div>
 
                                 <p className="mt-0">TypeScript has decisively won the JavaScript wars. With 17 million developers globally, it represents the second largest pool available. More importantly, TypeScript is now the default for any serious web development project. JavaScript only developers are becoming increasingly rare and frankly, harder to hire.</p>
@@ -225,7 +225,7 @@ export default function BlogPost() {
                                 <div className="flex flex-wrap gap-3 mb-6">
                                     <span className="px-3 py-1 bg-cyan-500/10 text-cyan-400 rounded-full text-xs font-semibold">Moderate Difficulty</span>
                                     <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-xs font-semibold">Growing Market</span>
-                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">110K–180K</span>
+                                    <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-xs font-semibold">110K to 180K</span>
                                 </div>
 
                                 <p className="mt-0">Go has transformed from obscure infrastructure tool to essential hire for modern organizations. Docker and Kubernetes, the foundational technologies of cloud computing, are written in Go. Every major cloud platform relies on Go. If you are building cloud native applications at scale, Go developers are not optional. They are essential.</p>
@@ -273,28 +273,28 @@ export default function BlogPost() {
                                         <tr className="hover:bg-white/[0.02] transition-colors">
                                             <td className="p-4 font-semibold text-white">Python</td>
                                             <td className="p-4 text-zinc-400">Easy</td>
-                                            <td className="p-4 text-zinc-400">80K–150K</td>
+                                            <td className="p-4 text-zinc-400">80K to 150K</td>
                                             <td className="p-4 text-zinc-400">Growing Fast</td>
                                             <td className="p-4 text-zinc-400">4.5M (Largest)</td>
                                         </tr>
                                         <tr className="hover:bg-white/[0.02] transition-colors">
                                             <td className="p-4 font-semibold text-white">TypeScript</td>
                                             <td className="p-4 text-zinc-400">Easy</td>
-                                            <td className="p-4 text-zinc-400">90K–160K</td>
+                                            <td className="p-4 text-zinc-400">90K to 160K</td>
                                             <td className="p-4 text-zinc-400">Growing Steady</td>
                                             <td className="p-4 text-zinc-400">17M (Second)</td>
                                         </tr>
                                         <tr className="hover:bg-white/[0.02] transition-colors">
                                             <td className="p-4 font-semibold text-white">Go</td>
                                             <td className="p-4 text-zinc-400">Moderate</td>
-                                            <td className="p-4 text-zinc-400">110K–180K</td>
+                                            <td className="p-4 text-zinc-400">110K to 180K</td>
                                             <td className="p-4 text-zinc-400">Growing Consistent</td>
                                             <td className="p-4 text-zinc-400">500K (Premium)</td>
                                         </tr>
                                         <tr className="hover:bg-white/[0.02] transition-colors">
                                             <td className="p-4 font-semibold text-white">Java</td>
                                             <td className="p-4 text-zinc-400">Easy</td>
-                                            <td className="p-4 text-zinc-400">100K–170K</td>
+                                            <td className="p-4 text-zinc-400">100K to 170K</td>
                                             <td className="p-4 text-zinc-400">Stable Mature</td>
                                             <td className="p-4 text-zinc-400">9M (Enterprise)</td>
                                         </tr>
@@ -307,7 +307,7 @@ export default function BlogPost() {
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 pointer-events-none" />
                                 <h3 className="text-2xl font-bold text-white mb-4 relative z-10 font-[family-name:var(--font-playfair)]">Need help choosing the right stack for your SaaS?</h3>
                                 <p className="text-zinc-400 mb-6 max-w-lg mx-auto relative z-10">Our engineering team can help you map out the perfect architecture combining modern performance with long-term hiring stability.</p>
-                                <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors relative z-10 hover:shadow-lg no-underline text-base">
+                                <Link href="/#collaborate" className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-black font-semibold rounded-full hover:bg-zinc-200 transition-colors relative z-10 hover:shadow-lg no-underline text-base">
                                     Consult our Engineers <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
@@ -358,7 +358,7 @@ export default function BlogPost() {
                             <div className="relative z-10">
                                 <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6 font-[family-name:var(--font-playfair)]">Planning to hire developers in 2026?</h2>
                                 <p className="text-lg text-zinc-400 mb-8 max-w-2xl mx-auto font-[family-name:var(--font-sora)]">Skip the guesswork. Oryxen deploys pre-vetted, elite engineering teams within weeks, fully aligned with your tech stack.</p>
-                                <Link href="/contact" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-zinc-200 transition-all hover:scale-105 shadow-xl hover:shadow-2xl">
+                                <Link href="/#collaborate" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-zinc-200 transition-all hover:scale-105 shadow-xl hover:shadow-2xl">
                                     Schedule a Consultation <ArrowRight className="w-5 h-5" />
                                 </Link>
                             </div>

@@ -113,8 +113,7 @@ export default function About() {
     <section id="about" className="py-24 lg:py-32 relative overflow-hidden bg-black">
       <ManifestoBackground />
       <div className="container-width relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center mb-16">
           {/* Manifesto Copy */}
           <div className="space-y-8">
             <h2 className="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-6">Manifesto</h2>
@@ -127,22 +126,6 @@ export default function About() {
               </p>
               <p>
                 Oryxen is different. We are a product-first studio. We prioritize system architecture, data integrity, and user experience over decorative fluff. We build software that works.
-              </p>
-            </div>
-
-            {/* SEO Structured Keyword Block */}
-            <div className="pt-6 border-t border-zinc-800/50 space-y-4">
-              <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest">What We Do</h4>
-              <p className="text-base text-zinc-500 leading-relaxed">
-                Oryxen Systems Private Limited is a <strong className="text-zinc-300">software development company</strong> specializing in{" "}
-                <strong className="text-zinc-300">custom web development</strong>,{" "}
-                <strong className="text-zinc-300">AI-driven systems</strong>,{" "}
-                <strong className="text-zinc-300">full-stack engineering</strong>, and{" "}
-                <strong className="text-zinc-300">enterprise applications</strong>.
-                We deliver end-to-end software engineering solutions — from system architecture and cloud infrastructure to production-grade application deployment.
-              </p>
-              <p className="text-sm text-zinc-600 leading-relaxed">
-                Based in India, serving clients globally. We combine deep engineering expertise with strategic product thinking to build systems that scale.
               </p>
             </div>
           </div>
@@ -159,7 +142,22 @@ export default function About() {
               ))
             )}
           </div>
+        </div>
 
+        {/* SEO Structured Keyword Block - Full Width */}
+        <div className="pt-12 border-t border-zinc-800/50 space-y-4 max-w-4xl mx-auto text-center lg:text-left">
+          <h4 className="text-xs font-mono text-zinc-600 uppercase tracking-widest text-center lg:text-left">What We Do</h4>
+          <p className="text-base text-zinc-500 leading-relaxed">
+            Oryxen Systems Private Limited is a <strong className="text-zinc-300">software development company</strong> specializing in{" "}
+            <strong className="text-zinc-300">custom web development</strong>,{" "}
+            <strong className="text-zinc-300">AI-driven systems</strong>,{" "}
+            <strong className="text-zinc-300">full-stack engineering</strong>, and{" "}
+            <strong className="text-zinc-300">enterprise applications</strong>.
+            We deliver end-to-end software engineering solutions — from system architecture and cloud infrastructure to production-grade application deployment.
+          </p>
+          <p className="text-sm text-zinc-600 leading-relaxed">
+            Based in India, serving clients globally. We combine deep engineering expertise with strategic product thinking to build systems that scale.
+          </p>
         </div>
       </div>
     </section>

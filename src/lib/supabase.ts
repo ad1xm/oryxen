@@ -4,6 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
 
+if (typeof window !== "undefined" && supabaseUrl === "https://placeholder.supabase.co") {
+    console.error("🚨 SUPABASE URL MISSING: Next.js did not bind environment variables. Please restart your dev server (npm run dev) so it can pick up your .env file!");
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Types for database tables

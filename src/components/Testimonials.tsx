@@ -24,7 +24,7 @@ export default function Testimonials() {
                     setTestimonials(fallbackTestimonials);
                 }
             } catch (error) {
-                console.error('Failed to load testimonials:', error);
+                console.error('Failed to load testimonials:', error instanceof Error ? error.message : JSON.stringify(error));
                 setTestimonials(fallbackTestimonials);
             } finally {
                 setLoading(false);

@@ -144,7 +144,7 @@ export default function Showcase() {
                     setProjects([]);
                 }
             } catch (error) {
-                console.error("Failed to load showcase projects:", error);
+                console.error("Failed to load showcase projects:", error instanceof Error ? error.message : JSON.stringify(error));
                 setProjects([]);
             }
         }

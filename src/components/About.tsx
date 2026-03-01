@@ -100,7 +100,7 @@ export default function About() {
           setStats(fallbackStats);
         }
       } catch (error) {
-        console.error('Failed to load stats:', error);
+        console.error('Failed to load stats:', error instanceof Error ? error.message : JSON.stringify(error));
         setStats(fallbackStats);
       } finally {
         setLoading(false);

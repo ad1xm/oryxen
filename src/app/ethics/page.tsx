@@ -1,17 +1,37 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { ArrowLeft, X } from "lucide-react";
 
 export default function EthicsPage() {
+    const router = useRouter();
+
+    const handleBack = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (typeof window !== "undefined" && window.history.length > 1) {
+            router.back();
+        } else {
+            router.push("/#footer");
+        }
+    };
+
     return (
         <main className="min-h-screen bg-black text-white pt-32 pb-24 relative">
-            <Link href="/" className="fixed top-6 right-6 md:top-10 md:right-10 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all z-50">
+            <button
+                onClick={handleBack}
+                aria-label="Close"
+                className="fixed top-6 right-6 md:top-10 md:right-10 w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all z-50 cursor-pointer"
+            >
                 <X className="w-5 h-5" />
-            </Link>
+            </button>
             <div className="container-width max-w-2xl">
-                <Link href="/" className="inline-flex items-center text-zinc-500 hover:text-white transition-colors mb-12 group">
+                <button
+                    onClick={handleBack}
+                    className="inline-flex items-center text-zinc-500 hover:text-white transition-colors mb-12 group cursor-pointer"
+                >
                     <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                    Back to Home
-                </Link>
+                    Back
+                </button>
 
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-12">Ethics</h1>
 
@@ -27,3 +47,4 @@ export default function EthicsPage() {
         </main>
     );
 }
+

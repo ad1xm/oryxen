@@ -153,7 +153,7 @@ export default function About() {
             <strong className="text-zinc-300">AI-driven systems</strong>,{" "}
             <strong className="text-zinc-300">full-stack engineering</strong>, and{" "}
             <strong className="text-zinc-300">enterprise applications</strong>.
-            We deliver end-to-end software engineering solutions — from system architecture and cloud infrastructure to production-grade application deployment.
+            We deliver end-to-end software engineering solutions from system architecture and cloud infrastructure to production-grade application deployment.
           </p>
           <p className="text-sm text-zinc-600 leading-relaxed">
             Based in India, serving clients globally. We combine deep engineering expertise with strategic product thinking to build systems that scale.

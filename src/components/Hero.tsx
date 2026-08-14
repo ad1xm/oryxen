@@ -1,115 +1,95 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
-import CodeEditor from "./ui/CodeEditor";
 
 export default function Hero() {
-
   return (
-    <section className="relative min-h-[72vh] lg:min-h-[78vh] flex items-start bg-black pt-24 pb-16 lg:pt-28 lg:pb-20 overflow-hidden border-b border-zinc-900">
-
-      {/* Subtle Animated Background */}
-      {/* Video Background */}
+    <section className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-between bg-black overflow-hidden border-b border-zinc-900 pt-24 pb-12 lg:pt-32 lg:pb-16">
+      {/* Background Image & Editorial Dark Vignette */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover opacity-40 grayscale"
-        >
-          <source src="/landing page video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
+        <Image
+          src="/new background.webp"
+          alt="Landing Background"
+          fill
+          priority
+          className="object-cover opacity-85 brightness-90"
+        />
+        {/* Editorial dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60" />
       </div>
 
-      <div className="container-width relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+      {/* Main Center Headline: Rise above. See beyond. */}
+      <div className="container-width relative z-10 my-auto py-8 lg:py-16">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-[clamp(1.75rem,5.2vw,5.2rem)] font-extrabold tracking-tight font-sans select-none whitespace-nowrap leading-none"
+        >
+          <span className="text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
+            Rise above.{" "}
+          </span>
+          <span className="text-transparent [-webkit-text-stroke:1.2px_rgba(255,255,255,0.85)] [text-stroke:1.2px_rgba(255,255,255,0.85)] font-normal">
+            See beyond.
+          </span>
+        </motion.h1>
+      </div>
 
-          {/* Text Content - With synchronized animations */}
-          <div className="relative z-20 text-center lg:text-left flex flex-col justify-center">
-            <div className="flex flex-col justify-center max-w-2xl mx-auto lg:mx-0">
+      {/* Bottom Content: Subtext + Premium Animated GET STARTED Button on Left, Diagonal Vector Accent on Right */}
+      <div className="container-width relative z-10 w-full flex flex-col md:flex-row items-end justify-between gap-8">
+        {/* Left Side: Requested Subtext & Premium GET STARTED Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-md text-left"
+        >
+          <p className="text-sm sm:text-base text-zinc-300 font-normal leading-relaxed mb-6 font-sans drop-shadow-md">
+            Oryxen engineers products that feel inevitable, combining strategy, design, and technology into systems built for global growth.
+          </p>
 
-              {/* SEO H1 — visible + keyword-reinforced */}
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="tracking-tight text-white mb-5 lg:mb-6 leading-[1.05] font-[family-name:var(--font-playfair)] font-semibold"
-              >
-                <span className="block text-3xl sm:text-4xl lg:text-5xl whitespace-nowrap">
-                  Where strategy meets
-                </span>
-                <span className="block text-5xl sm:text-6xl lg:text-7xl leading-[1.05]">
-                  engineering
-                </span>
-                <span className="block text-lg sm:text-xl lg:text-2xl mt-4 text-zinc-400 font-[family-name:var(--font-sora)] font-normal tracking-normal">
-                  Scalable software systems, architected in India. Built for global teams.
-                </span>
-              </motion.h1>
-
-              {/* Animated paragraph - fades in after headline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-lg sm:text-xl text-zinc-400 max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8 lg:mb-10 font-[family-name:var(--font-sora)] font-normal"
-              >
-                We design, architect, and build bespoke digital solutions — custom web development, enterprise applications, and AI-driven software. Based in India, serving clients globally.
-              </motion.p>
-
-              {/* Animated buttons - slide in after paragraph */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.2 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center sm:items-stretch"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    href="#contact"
-                    className="bg-white text-black px-8 py-3.5 text-sm md:text-base font-bold rounded-full hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2 group min-w-[180px]"
-                  >
-                    Start a Project
-                    <motion.span
-                      initial={{ x: 0 }}
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
-                    >
-                      <ArrowRight className="w-4 h-4" />
-                    </motion.span>
-                  </Link>
-                </motion.div>
-                <Link
-                  href="#capabilities"
-                  className="text-zinc-400 hover:text-white px-8 py-3.5 text-sm md:text-base font-medium transition-all border border-zinc-800 hover:border-zinc-700 rounded-full flex items-center justify-center min-w-[160px] hover:bg-zinc-900/50"
-                >
-                  View Work
-                </Link>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Visual Content - Live Code Editor */}
-          <div className="w-full flex items-center justify-center lg:justify-end pt-8 lg:pt-16">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="w-full max-w-lg"
+          <motion.div
+            whileHover={{ y: -2 }}
+            whileTap={{ y: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="inline-block"
+          >
+            <Link
+              href="#contact"
+              className="group inline-flex items-center gap-2.5 bg-white text-black font-bold text-xs tracking-[0.18em] uppercase px-7 py-3.5 rounded-sm hover:bg-zinc-200 transition-colors duration-200 shadow-md"
             >
-              <CodeEditor />
-            </motion.div>
-          </div>
+              <span>GET STARTED</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-black/80 group-hover:text-black group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200" />
+            </Link>
+          </motion.div>
+        </motion.div>
 
+        {/* Right Side: Diagonal Parallel Accent Lines Vector */}
+        <div className="hidden sm:block pointer-events-none opacity-40">
+          <svg
+            className="w-48 h-28 text-white/30"
+            viewBox="0 0 200 120"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <line x1="120" y1="120" x2="200" y2="40" />
+            <line x1="100" y1="120" x2="200" y2="20" />
+            <line x1="80" y1="120" x2="200" y2="0" />
+            <line x1="60" y1="120" x2="180" y2="0" />
+            <line x1="40" y1="120" x2="160" y2="0" />
+          </svg>
         </div>
       </div>
     </section>
   );
 }
+
+
+
+
+
+

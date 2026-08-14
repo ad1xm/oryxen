@@ -166,7 +166,7 @@ export default function Showcase() {
                     </h3>
                     <p className="text-zinc-500 max-w-2xl text-sm leading-relaxed">
                         Every product ships with your logo, your domain, your colors.
-                        We build, you own — fully white labeled and ready to launch.
+                        We build, you own: fully white labeled and ready to launch.
                     </p>
                 </motion.div>
 

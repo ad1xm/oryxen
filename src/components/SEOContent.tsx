@@ -29,7 +29,7 @@ export default function SEOContent() {
                     </p>
                     <p className="text-sm text-zinc-600 leading-relaxed">
                         From cloud-native web applications and intelligent automation pipelines to mobile platforms and
-                        internal enterprise tooling — Oryxen Systems delivers production-grade software that powers real
+                        internal enterprise tooling, Oryxen Systems delivers production-grade software that powers real
                         businesses. Founded by Aditya Choudhury in 2025, the company operates from India and serves clients across
                         the globe, combining deep technical expertise with strategic product thinking.
                     </p>

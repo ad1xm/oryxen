@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     },
     title: "Products | Oryxen Systems Private Limited – Software Products Built in India",
     description:
-        "Explore products built by Oryxen Systems Private Limited. EdgeLightWind — a lightweight Windows desktop utility for video calls and streaming. Built with engineering excellence in India.",
+        "Explore products built by Oryxen Systems Private Limited. EdgeLightWind, a lightweight Windows desktop utility for video calls and streaming. Built with engineering excellence in India.",
     openGraph: {
         title: "Products by Oryxen Systems Private Limited",
         description:
@@ -40,7 +40,7 @@ export default function ProductsPage() {
                     Our Products
                 </h1>
                 <p className="text-xl text-zinc-400 mb-16 max-w-2xl leading-relaxed">
-                    Software products built by Oryxen Systems Private Limited — engineered for performance, designed for purpose.
+                    Software products built by Oryxen Systems Private Limited: engineered for performance, designed for purpose.
                 </p>
 
                 {/* EdgeLightWind */}

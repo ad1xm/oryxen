@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     },
     title: "Contact Us | Oryxen Systems Private Limited – Get in Touch",
     description:
-        "Contact Oryxen Systems Private Limited — a software development company based in India. Reach out for custom web development, AI-driven systems, enterprise applications, and full-stack engineering projects.",
+        "Contact Oryxen Systems Private Limited, a software development company based in India. Reach out for custom web development, AI-driven systems, enterprise applications, and full-stack engineering projects.",
     openGraph: {
         title: "Contact Oryxen Systems Private Limited",
         description:
@@ -66,7 +66,7 @@ export default function ContactPage() {
                     Contact Oryxen Systems
                 </h1>
                 <p className="text-xl text-zinc-400 mb-16 max-w-2xl leading-relaxed">
-                    Ready to start a project? Let&apos;s discuss your requirements. From concept to production — without friction.
+                    Ready to start a project? Let&apos;s discuss your requirements. From concept to production without friction.
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-16">
@@ -151,11 +151,11 @@ export default function ContactPage() {
                                     },
                                     {
                                         title: "Full-Stack Engineering",
-                                        description: "End-to-end development — frontend, backend, APIs, databases, and infrastructure.",
+                                        description: "End-to-end development including frontend, backend, APIs, databases, and infrastructure.",
                                     },
                                     {
                                         title: "Enterprise Applications",
-                                        description: "Scalable systems for organizations — CRMs, ERPs, dashboards, and internal tools.",
+                                        description: "Scalable systems for organizations, including CRMs, ERPs, dashboards, and internal tools.",
                                     },
                                     {
                                         title: "Mobile Applications",

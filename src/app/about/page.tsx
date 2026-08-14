@@ -5,9 +5,9 @@ export const metadata: Metadata = {
     alternates: {
         canonical: "/about",
     },
-    title: "About Us | Oryxen Systems Private Limited – Software Engineering Company in India",
+    title: "About Us | Oryxen Systems Private Limited | Software Engineering Company in India",
     description:
-        "Learn about Oryxen Systems Private Limited — a software development company based in India. We specialize in custom web development, AI-driven systems, full-stack engineering, and enterprise applications. Founded by Aditya Choudhury.",
+        "Learn about Oryxen Systems Private Limited, a software development company based in India. We specialize in custom web development, AI-driven systems, full-stack engineering, and enterprise applications. Founded by Aditya Choudhury.",
     openGraph: {
         title: "About Oryxen Systems Private Limited",
         description:
@@ -61,7 +61,7 @@ export default function AboutPage() {
                         <p>
                             Founded in 2025, we are a product-first engineering studio. We reject bloated software and instead focus on
                             system architecture, data integrity, and user experience. Every product we build is engineered to perform at
-                            scale — from day one.
+                            scale from day one.
                         </p>
                         <p>
                             <strong className="text-zinc-200">Based in India, serving clients globally.</strong> Our engineering team
@@ -80,12 +80,12 @@ export default function AboutPage() {
                             {
                                 title: "Custom Web Development",
                                 description:
-                                    "Production-grade web applications built with modern frameworks — Next.js, React, Node.js, and cloud-native architectures.",
+                                    "Production-grade web applications built with modern frameworks like Next.js, React, Node.js, and cloud-native architectures.",
                             },
                             {
                                 title: "AI-Driven Systems",
                                 description:
-                                    "Intelligent software with AI/ML integration — from natural language processing to predictive analytics and automation pipelines.",
+                                    "Intelligent software with AI/ML integration, covering natural language processing, predictive analytics, and automation pipelines.",
                             },
                             {
                                 title: "Full-Stack Engineering",
@@ -95,7 +95,7 @@ export default function AboutPage() {
                             {
                                 title: "Enterprise Applications",
                                 description:
-                                    "Scalable, secure systems for organizations — CRMs, ERPs, admin dashboards, and internal tooling.",
+                                    "Scalable, secure systems for organizations, including CRMs, ERPs, admin dashboards, and internal tooling.",
                             },
                             {
                                 title: "Mobile Applications",
@@ -207,7 +207,7 @@ export default function AboutPage() {
                 <section className="pt-12 border-t border-zinc-800">
                     <h2 className="text-3xl font-bold tracking-tight mb-4">Ready to build?</h2>
                     <p className="text-zinc-400 mb-8">
-                        Let&apos;s discuss your project. From concept to production — without friction.
+                        Let&apos;s discuss your project. From concept to production without friction.
                     </p>
                     <div className="flex gap-4">
                         <Link

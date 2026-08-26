@@ -4,19 +4,9 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Building2,
-    Shield,
-    Sparkles,
     CheckCircle2,
     ArrowRight,
     Loader2,
-    Phone,
-    Mail,
-    User,
-    FileText,
-    Check,
-    Layers,
-    Cpu,
     Lock
 } from "lucide-react";
 import Image from "next/image";
@@ -33,17 +23,14 @@ const FEATURED_PROPERTIES = [
 
 const HIGHLIGHTS = [
     {
-        icon: Cpu,
         title: "High-Performance Systems",
         desc: "Built with Next.js, AI integration & low-latency cloud architecture."
     },
     {
-        icon: Shield,
         title: "Enterprise Grade Security",
         desc: "Strict data privacy, end-to-end encryption & compliance standards."
     },
     {
-        icon: Sparkles,
         title: "Engineered for Global Scale",
         desc: "Bespoke digital properties tailored for continuous growth."
     }
@@ -154,20 +141,10 @@ function EnquiryContent() {
                     {/* Left Column: Property & Project Showcase */}
                     <div className="lg:col-span-6 space-y-8">
                         <div className="space-y-4">
-                            <motion.div
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5 }}
-                                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/60 text-xs font-mono text-zinc-300"
-                            >
-                                <Building2 className="w-3.5 h-3.5 text-orange-400" />
-                                <span>Exclusive Project & Property Access</span>
-                            </motion.div>
-
                             <motion.h1
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.1 }}
+                                transition={{ duration: 0.5 }}
                                 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.05]"
                             >
                                 Experience our systems &amp; properties.
@@ -176,7 +153,7 @@ function EnquiryContent() {
                             <motion.p
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.15 }}
+                                transition={{ duration: 0.5, delay: 0.1 }}
                                 className="text-zinc-400 text-lg md:text-xl font-light leading-relaxed max-w-xl"
                             >
                                 Oryxen engineers high-performance digital products, intelligent infrastructure, and bespoke enterprise systems for global growth.
@@ -187,7 +164,7 @@ function EnquiryContent() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
+                            transition={{ duration: 0.6, delay: 0.15 }}
                             className="relative rounded-2xl overflow-hidden border border-zinc-800/80 bg-zinc-900/40 p-1 group shadow-2xl"
                         >
                             <div className="relative h-48 sm:h-56 w-full rounded-xl overflow-hidden bg-zinc-950">
@@ -216,15 +193,14 @@ function EnquiryContent() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.25 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
                             className="grid sm:grid-cols-3 gap-4"
                         >
                             {HIGHLIGHTS.map((h, i) => (
                                 <div
                                     key={i}
-                                    className="p-4 rounded-xl border border-zinc-900 bg-zinc-900/20 backdrop-blur-sm space-y-2 hover:border-zinc-800 transition-colors"
+                                    className="p-4 rounded-xl border border-zinc-900 bg-zinc-900/20 backdrop-blur-sm space-y-1.5 hover:border-zinc-800 transition-colors"
                                 >
-                                    <h.icon className="w-5 h-5 text-orange-400" />
                                     <h3 className="text-sm font-semibold text-white">{h.title}</h3>
                                     <p className="text-xs text-zinc-500 leading-relaxed">{h.desc}</p>
                                 </div>
@@ -292,8 +268,7 @@ function EnquiryContent() {
 
                                             {/* Full Name */}
                                             <div className="space-y-1.5">
-                                                <label htmlFor="enquiry-name" className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                                                    <User className="w-3.5 h-3.5 text-zinc-500" />
+                                                <label htmlFor="enquiry-name" className="text-xs font-medium text-zinc-300">
                                                     Full Name <span className="text-orange-400">*</span>
                                                 </label>
                                                 <input
@@ -311,8 +286,7 @@ function EnquiryContent() {
                                             <div className="grid sm:grid-cols-2 gap-4">
                                                 {/* Phone Number */}
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="enquiry-phone" className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                                                        <Phone className="w-3.5 h-3.5 text-zinc-500" />
+                                                    <label htmlFor="enquiry-phone" className="text-xs font-medium text-zinc-300">
                                                         Phone Number <span className="text-orange-400">*</span>
                                                     </label>
                                                     <input
@@ -328,8 +302,7 @@ function EnquiryContent() {
 
                                                 {/* Email Address */}
                                                 <div className="space-y-1.5">
-                                                    <label htmlFor="enquiry-email" className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                                                        <Mail className="w-3.5 h-3.5 text-zinc-500" />
+                                                    <label htmlFor="enquiry-email" className="text-xs font-medium text-zinc-300">
                                                         Email Address <span className="text-orange-400">*</span>
                                                     </label>
                                                     <input
@@ -346,8 +319,7 @@ function EnquiryContent() {
 
                                             {/* Property / Project Selector */}
                                             <div className="space-y-1.5">
-                                                <label htmlFor="enquiry-property" className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                                                    <Layers className="w-3.5 h-3.5 text-zinc-500" />
+                                                <label htmlFor="enquiry-property" className="text-xs font-medium text-zinc-300">
                                                     Property / Project
                                                 </label>
                                                 <select
@@ -366,8 +338,7 @@ function EnquiryContent() {
 
                                             {/* Message or Requirement */}
                                             <div className="space-y-1.5">
-                                                <label htmlFor="enquiry-message" className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                                                    <FileText className="w-3.5 h-3.5 text-zinc-500" />
+                                                <label htmlFor="enquiry-message" className="text-xs font-medium text-zinc-300">
                                                     Message or Requirement <span className="text-orange-400">*</span>
                                                 </label>
                                                 <textarea
